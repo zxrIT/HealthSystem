@@ -1,0 +1,81 @@
+.headerBox {
+  width: 100%;
+  height: 27%;
+  background-color: white;
+  color: darkblue;
+  box-sizing: border-box;
+  padding: 40px;
+  display: flex;
+  justify-content: left;
+
+  .moneyBox {
+    margin-left: 5px;
+    height: 100%;
+    width: 20%;
+    border-right: 2px solid #7e8c8d;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .money {
+      font-weight: bold;
+      font-size: 40px;
+      margin-bottom: 10px;
+    }
+
+    .title {
+      margin-top: 10px;
+      font-size: 20px;
+    }
+
+  }
+
+  .echartsBox {
+    margin-left: 10px;
+    width: 60%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .echartsMoney {
+      width: 40%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      border-right: 2px solid #7e8c8d;
+
+      .echartsLeftTop {
+        font-weight: bold;
+        font-size: 40px;
+        margin-bottom: 10px;
+      }
+
+      .echartsLeftBottom {
+        margin-top: 10px;
+        font-size: 20px;
+      }
+    }
+
+    .echartsRender {
+      width: 60%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+
+      .upload {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+        margin-left: 20px;
+        font-weight: bold;
+        font-size: 20px;
+        width: 45%;
+        height: 100%;
+      }
+    }
+  }
+}

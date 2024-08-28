@@ -1,0 +1,67 @@
+.leftBox {
+  height: 100%;
+  width: 100%;
+  background-color: cornflowerblue;
+  color: aliceblue;
+  display: flex;
+  flex-direction: column;
+
+  .leftUserImg {
+    width: 200px;
+    height: 200px;
+    margin-left: 50px;
+    margin-top: 40px;
+    border-radius: 50%;
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .leftUserName {
+    width: 100%;
+    height: 80px;
+    margin-top: 20px;
+    font-size: 25px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .leftNav {
+    border-radius: 10px;
+    width: 250px;
+    height: 50px;
+    font-size: 22px;
+    line-height: 50px;
+    margin: 15px;
+    text-align: center;
+    letter-spacing: 10px;
+    border: 2px solid transparent;
+    transition: background-color 250ms linear;
+  }
+
+  .leftMessage {
+    display: flex;
+    width: 100%;
+    height: 70px;
+    font-size: 20px;
+    margin-top: 30px;
+    text-align: center;
+    line-height: 40px;
+
+    div {
+      margin-left: 40px;
+      width: 30%;
+      height: 45px;
+      border-radius: 10px;
+      border: 2px solid aliceblue;
+    }
+  }
+}
