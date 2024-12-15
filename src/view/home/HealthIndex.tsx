@@ -1,4 +1,3 @@
-import React from "react"
 import healthIndex from "./HealthIndex.module.less"
 import type {FC, ReactElement} from "react"
 import LeftNavigate from "../../component/home/leftNav/LeftNavigate";

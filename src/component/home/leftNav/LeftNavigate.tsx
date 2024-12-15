@@ -1,5 +1,5 @@
 import type {FC, ReactElement} from "react"
-import React, {useState} from "react"
+import {useState} from "react"
 import type {NavigateFunction} from "react-router-dom"
 import {useNavigate} from "react-router-dom"
 import leftNavigate from "./LeftNavigate.module.less"
@@ -12,7 +12,7 @@ import {
     SlidersOutlined,
     WarningOutlined
 } from "@ant-design/icons";
-import {LeftNavigateEnum, NavigateUrl} from "../../../typing/enum/index";
+import {LeftNavigateEnum, NavigateUrl} from "../../../typing/enum";
 
 const LeftNavigate: FC = (): ReactElement => {
     const navigate: NavigateFunction = useNavigate()

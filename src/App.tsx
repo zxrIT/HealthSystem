@@ -4,7 +4,6 @@ import HealthIndex from "./view/home/HealthIndex";
 import Login from "./view/login/Login";
 import ContentChargeUp from "./view/home/contentChargeUp/ContentChargeUp";
 import ContentDayBook from "./view/home/contentDayBook/ContentDayBook";
-import UploadAli from "./view/upload/UploadAli";
 
 function App() {
     return (
@@ -17,8 +16,6 @@ function App() {
                     </Route>
                     <Route path="/" element={<Login/>}/>
                     <Route path="*" element={<Navigate to="/"/>}/>
-
-                    <Route path="/util/uploadAli" element={<UploadAli/>}/>
                 </Routes>
             </BrowserRouter>
         </Fragment>
