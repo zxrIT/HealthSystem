@@ -2,13 +2,12 @@ import uploadAli from "./UploadCheck.module.less"
 import {FC, ReactElement, useEffect, useState} from "react"
 import {Button, Form, Input, message, Upload} from 'antd';
 import type {GetProp, UploadFile, UploadProps} from 'antd';
-
-const {TextArea} = Input;
 import {Upload as UploadEnum} from "../../typing/enum";
 import {useForm} from "antd/es/form/Form";
 import {UploadOutlined} from "@ant-design/icons";
 import {IUploadCsv} from "../../typing/upload/upload.ts";
-import httpAxios from "../../http/HttpAxios.ts";
+import {useDispatch} from "react-redux";
+import {changeTableReRenderStatus} from "../../store/slice/bookKeepingSlice.ts";
 
 interface IProps {
     uploadTitle: string,
@@ -17,7 +16,10 @@ interface IProps {
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
+const {TextArea} = Input;
+
 const UploadCheck: FC<IProps> = ({uploadTitle, uploadType}): ReactElement => {
+    const dispatch = useDispatch()
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [selectStatus, setSelectStatus] = useState<boolean>(true)
     const [uploading, setUploading] = useState(false);
@@ -40,6 +42,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType}): ReactElement => {
                 .then((response) => {
                     if (response.code === 200) {
                         setFileList([]);
+                        dispatch(changeTableReRenderStatus(true));
                         message.success(response.data);
                     } else {
                         message.error(response.data);

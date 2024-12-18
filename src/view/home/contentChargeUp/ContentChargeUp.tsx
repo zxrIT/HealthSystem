@@ -14,10 +14,13 @@ import {IBookKeepingResponse} from "../../../typing/response/bookKeepingResponse
 import {BaseResponse} from "../../../typing/response/baseResponse.ts";
 import {UpdateOrDeleteEnum} from "../../../typing/enum";
 import {useForm} from "antd/es/form/Form";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../store";
 
 const {TextArea} = Input;
 
 const ContentChargeUp: FC = (): ReactElement => {
+    const bookKeepingSlice = useSelector((state: RootState) => state.bookKeeping)
     const initPaginationSize: number = 7
     const [total, setTotal] = useState<number>(0)
     const [page, setPage] = useState<number>(1)
@@ -107,7 +110,7 @@ const ContentChargeUp: FC = (): ReactElement => {
     return (
         <Fragment>
             <div className={contentChargeUp.chargeUpBox}>
-                <Table onRow={(record) => {
+                <Table loading={bookKeepingSlice.tableReRenderStatus} onRow={(record) => {
                     return {
                         onMouseEnter: () => {
                             setBookKeepingChoice(() => {
@@ -134,11 +137,14 @@ const ContentChargeUp: FC = (): ReactElement => {
                         initPaginationSize ? initPaginationSize - 1 : initPaginationSize
                     )
                 }} onChange={page => setPage(page.current as number)}>
-                    <Column title="交易单号" dataIndex="tradeOrderNumber" key="tradeOrderNumber" align="center"/>
+                    <Column className={contentChargeUp.overflow} title="交易单号" dataIndex="tradeOrderNumber"
+                            key="tradeOrderNumber" align="center"/>
                     <Column width={100} title="交易分类" dataIndex="transactionClassification" align="center"/>
-                    <Column title="商品说明" dataIndex="productDescription" align="center"/>
+                    <Column className={contentChargeUp.overflow} title="商品说明" dataIndex="productDescription"
+                            align="center"/>
                     <Column width={100} title="交易金额" dataIndex="amountOfTransaction" align="center"/>
-                    <Column title="付款方式" dataIndex="modeOfTransaction" align="center"/>
+                    <Column className={contentChargeUp.overflow} title="付款方式" dataIndex="modeOfTransaction"
+                            align="center"/>
                     <Column
                         title="操作"
                         key="action"
