@@ -1,4 +1,4 @@
-import type {FC, ReactElement} from "react"
+import {FC, ReactElement} from "react"
 import {Fragment, useEffect, useState} from "react"
 import {Button, DatePicker, Drawer, FloatButton, Form, Input, message, Space, Table} from 'antd';
 import contentChargeUp from "./ContentChargeUp.module.less"
@@ -72,6 +72,11 @@ const ContentChargeUp: FC = (): ReactElement => {
             message.error("字段校验没有通过，请通过提示完成字段填写")
         })
     }
+
+    useEffect(() => {
+        setReRender(!reRender)
+    }, [bookKeepingSlice])
+
     useEffect(() => {
         antdForm.resetFields()
     }, [bookKeepingChoice])

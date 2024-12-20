@@ -8,3 +8,8 @@ export interface IBookKeepingResponse<T> {
     searchCount: boolean
     optimizeJoinOfCountSql: boolean
 }
+
+export interface IUploadResult {
+    uploadId: string
+    uploadMessage: string
+}

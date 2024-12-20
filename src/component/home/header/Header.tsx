@@ -19,6 +19,10 @@ const Header: FC = (): ReactElement => {
         setOpen(true);
     };
 
+    const changeDrawerStatus = (status: boolean) => {
+        setOpen(status)
+    }
+
     const onClose = () => {
         setOpen(false);
     };
@@ -26,8 +30,9 @@ const Header: FC = (): ReactElement => {
     return (
         <Fragment>
             <Drawer onClose={onClose} open={open}>
-                {uploadComponent === Upload.ali ? <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.ali}/> :
-                    <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.weiChect}/>}
+                {uploadComponent === Upload.ali ? <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.ali} changeDrawerStatus={changeDrawerStatus}/> :
+                    <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.weiChect}
+                                 changeDrawerStatus={changeDrawerStatus}/>}
             </Drawer>
             <div className={header.headerBox}>
                 <div className={header.moneyBox}>

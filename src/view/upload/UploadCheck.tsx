@@ -8,22 +8,70 @@ import {UploadOutlined} from "@ant-design/icons";
 import {IUploadCsv} from "../../typing/upload/upload.ts";
 import {useDispatch} from "react-redux";
 import {changeTableReRenderStatus} from "../../store/slice/bookKeepingSlice.ts";
+import {BaseResponse} from "../../typing/response/baseResponse.ts";
+import {IUploadResult} from "../../typing/response/bookKeepingResponse";
 
 interface IProps {
     uploadTitle: string,
     uploadType: UploadEnum,
+    changeDrawerStatus: (status: boolean) => void
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const {TextArea} = Input;
 
-const UploadCheck: FC<IProps> = ({uploadTitle, uploadType}): ReactElement => {
+const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}): ReactElement => {
     const dispatch = useDispatch()
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [uploadId, setUploadId] = useState<string>("");
     const [selectStatus, setSelectStatus] = useState<boolean>(true)
+    const [uploadEndStatus, setUploadEndStatus] = useState<boolean>(false);
     const [uploading, setUploading] = useState(false);
     const [antdForm] = useForm()
+
+    useEffect(() => {
+        if (typeof (WebSocket) === "undefined") {
+            message.error("您的浏览器版本太低请使用新版的浏览器")
+        }
+    }, []);
+
+    useEffect(() => {
+        if (uploadId.length === 0) return
+        const websocket = new WebSocket("ws://localhost:8040/upload/csv/status");
+        websocket.onopen = () => {
+            console.log("websocket open");
+        }
+        const timer = setTimeout(() => {
+            if (!uploadEndStatus) {
+                dispatch(changeTableReRenderStatus(false));
+                message.error("数据处理失败请稍后重试");
+                changeDrawerStatus(false)
+            }
+            websocket.close()
+        }, 10000)
+
+        const sendMessageTimer = setInterval(() => {
+            websocket.send(uploadId)
+        }, 1000)
+
+        websocket.onmessage = event => {
+            if (event.data === "yes") {
+                dispatch(changeTableReRenderStatus(false));
+                websocket.close()
+                clearInterval(timer)
+                clearInterval(sendMessageTimer)
+                setUploadEndStatus(true)
+                changeDrawerStatus(false)
+                message.success("数据处理成功")
+            } else if (event.data === "error") {
+                dispatch(changeTableReRenderStatus(false));
+                message.error("服务器异常请稍后重试");
+                changeDrawerStatus(false)
+            }
+        }
+    }, [uploadId]);
+
 
     const handleUpload = () => {
         const uploadObject: IUploadCsv = antdForm.getFieldsValue()
@@ -39,13 +87,14 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType}): ReactElement => {
                 method: 'POST',
                 body: formData,
             }).then((res) => res.json())
-                .then((response) => {
+                .then((response: BaseResponse<IUploadResult>) => {
                     if (response.code === 200) {
                         setFileList([]);
                         dispatch(changeTableReRenderStatus(true));
-                        message.success(response.data);
+                        message.success(response.data.uploadMessage);
+                        setUploadId(response.data.uploadId);
                     } else {
-                        message.error(response.data);
+                        message.error(response.data.uploadMessage);
                     }
                 }).finally(() => {
                 setUploading(false);
