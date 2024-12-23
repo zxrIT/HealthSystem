@@ -3,7 +3,7 @@ import {useState} from "react"
 import type {NavigateFunction} from "react-router-dom"
 import {useNavigate} from "react-router-dom"
 import leftNavigate from "./LeftNavigate.module.less"
-import mapImg from "../../../assets/static/system/user.jpg"
+import mapImg from "../../../assets/static/system/icon/user.jpg"
 import {
     BarChartOutlined,
     LineChartOutlined,

@@ -1,0 +1,124 @@
+.loginContainer {
+  width: 100%;
+  height: 100%;
+  background-image: url("../../assets/static/system/icon/bg.jpg");
+  background-size: contain;
+  background-repeat: repeat-x;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .loginContext {
+    width: 500px;
+    height: 550px;
+    background-color: #fff;
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+
+    .loginTitle {
+      width: 100%;
+      flex: 2;
+      border-top-left-radius: 15px;
+      border-top-right-radius: 15px;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      .titleIcon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 1;
+
+        img {
+          width: 70px;
+          height: 70px;
+        }
+      }
+
+      .titleContent {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex: 2;
+        font-size: 40px;
+        font-weight: bold;
+        color: #646CFF;
+      }
+
+      .titleBtn {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        flex: 1;
+
+        img {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+
+    .loginTopic {
+      display: flex;
+      margin-left: 20px;
+      width: 100%;
+      flex: 1;
+      color: #646CFF;
+      font-size: 20px;
+      font-weight: bold;
+      align-items: center;
+    }
+
+    .loginInput {
+      width: 100%;
+      flex: 2;
+    }
+
+    .loginRemember {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      flex: 1;
+    }
+
+    .loginButton {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      flex: 1;
+    }
+
+    .loginOthers {
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      border-bottom-left-radius: 15px;
+      border-bottom-right-radius: 15px;
+      margin-bottom: 20px;
+      width: 100%;
+      color: #646CFF;
+      flex: 1;
+
+      div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        img {
+          margin-right: 20px;
+          width: 30px;
+          height: 30px;
+        }
+      }
+    }
+  }
+}

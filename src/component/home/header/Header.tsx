@@ -1,4 +1,4 @@
-import type {FC, ReactElement} from "react"
+import {FC, ReactElement, useEffect} from "react"
 import {Fragment, useState} from "react"
 import header from "./Header.module.less"
 import {Button, Drawer} from "antd";
@@ -12,6 +12,10 @@ const Header: FC = (): ReactElement => {
     const [open, setOpen] = useState<boolean>(false);
     const [uploadTitle, setUploadTitle] = useState<string>("")
     const [uploadComponent, setUploadComponent] = useState<Upload>()
+    useEffect(() => {
+        setIncome(income)
+        setDisburse(disburse)
+    }, [])
 
     const showDrawer = (uploadTitle: string, uploadComponent: Upload) => {
         setUploadComponent(uploadComponent)
@@ -30,7 +34,8 @@ const Header: FC = (): ReactElement => {
     return (
         <Fragment>
             <Drawer onClose={onClose} open={open}>
-                {uploadComponent === Upload.ali ? <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.ali} changeDrawerStatus={changeDrawerStatus}/> :
+                {uploadComponent === Upload.ali ? <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.ali}
+                                                               changeDrawerStatus={changeDrawerStatus}/> :
                     <UploadCheck uploadTitle={uploadTitle} uploadType={Upload.weiChect}
                                  changeDrawerStatus={changeDrawerStatus}/>}
             </Drawer>

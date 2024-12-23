@@ -1,4 +1,5 @@
-import axios, {InternalAxiosRequestConfig, AxiosResponse, AxiosInstance, CreateAxiosDefaults} from "axios"
+import axios, {AxiosInstance, AxiosResponse, CreateAxiosDefaults, InternalAxiosRequestConfig} from "axios"
+import {useLocalStorage} from "../hooks/useLocalStorage.ts";
 
 const httpAxios: AxiosInstance = axios.create({
     baseURL: "http://localhost:10000",
@@ -6,7 +7,9 @@ const httpAxios: AxiosInstance = axios.create({
 } as CreateAxiosDefaults)
 
 httpAxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const {getStorage} = useLocalStorage()
     config.headers["Content-Type"] = "application/json;charset=UTF-8"
+    config.headers["Authorization"] = JSON.parse(getStorage("authentication"))
     return config
 }, (error: any) => {
     Promise.reject(error)
