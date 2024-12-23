@@ -10,6 +10,8 @@ import {useDispatch} from "react-redux";
 import {changeTableReRenderStatus} from "../../store/slice/bookKeepingSlice.ts";
 import {BaseResponse} from "../../typing/response/baseResponse.ts";
 import {IUploadResult} from "../../typing/response/bookKeepingResponse";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
 
 interface IProps {
     uploadTitle: string,
@@ -23,6 +25,7 @@ const {TextArea} = Input;
 
 const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}): ReactElement => {
     const dispatch = useDispatch()
+    const userSlice = useSelector((state: RootState) => state.user)
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploadId, setUploadId] = useState<string>("");
     const [selectStatus, setSelectStatus] = useState<boolean>(true)
@@ -73,18 +76,21 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
     }, [uploadId]);
 
 
-    const handleUpload = () => {
+    const handleUpload =() => {
         const uploadObject: IUploadCsv = antdForm.getFieldsValue()
-        antdForm.validateFields().then(() => {
+        antdForm.validateFields().then(async () => {
             const formData = new FormData();
             fileList.forEach((file) => {
                 formData.append('file', file as FileType);
             });
             setUploading(true);
             fetch('http://localhost:10000/upload/csv/'
-                + uploadObject.username + "/" + "111" + "/" +
+                + uploadObject.username + "/" + userSlice.user.id + "/" +
                 (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
                 method: 'POST',
+                headers: {
+                    'Authorization': userSlice.user.token
+                },
                 body: formData,
             }).then((res) => res.json())
                 .then((response: BaseResponse<IUploadResult>) => {
@@ -96,9 +102,11 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                     } else {
                         message.error(response.data.uploadMessage);
                     }
-                }).finally(() => {
+                }).catch(error => {
+                console.log(error);
+            }).finally(() => {
                 setUploading(false);
-            });
+            })
         })
     };
 

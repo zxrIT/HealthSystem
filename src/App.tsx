@@ -5,6 +5,7 @@ import Login from "./view/login/Login";
 import ContentChargeUp from "./view/home/contentChargeUp/ContentChargeUp";
 import ContentDayBook from "./view/home/contentDayBook/ContentDayBook";
 import WithAuthenticationHocComponent from "./HOC/WithAuthenticationHocComponent.tsx";
+import Forbidden from "./error/403";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                             <Route path="/home/" element={<ContentChargeUp/>}/>
                             <Route path="/home/dayBook" element={<ContentDayBook/>}/>
                         </Route>
+                        <Route path="/403" element={<Forbidden/>}/>
                         <Route path="/" element={<Login/>}/>
                         <Route path="*" element={<Navigate to="/"/>}/>
                     </Routes>

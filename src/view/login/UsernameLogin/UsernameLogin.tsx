@@ -6,6 +6,9 @@ import {BaseResponse} from "../../../typing/response/baseResponse.ts";
 import {LoginPasswordRequest, LoginPasswordResponse} from "../../../typing/login/passwodLogin.ts";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import {useLocalStorage} from "../../../hooks/useLocalStorage.ts";
+import {useDispatch} from "react-redux";
+import {initUser} from "../../../store/slice/UserSlice.ts";
+import {IUser} from "../../../typing/user/user.ts";
 
 type FieldType = {
     username?: string;
@@ -17,6 +20,7 @@ interface IProps {
 }
 
 const UsernameLogin: FC<IProps> = ({status}): ReactElement => {
+    const dispatch = useDispatch()
     const {setStorage} = useLocalStorage()
     const navigateFunction: NavigateFunction = useNavigate();
     const [antdForm] = useForm();
@@ -26,6 +30,7 @@ const UsernameLogin: FC<IProps> = ({status}): ReactElement => {
             const passwordLoginResponse = await passwordLoginService<BaseResponse<LoginPasswordResponse | string>, LoginPasswordRequest>(antdForm.getFieldsValue())
             if (passwordLoginResponse.code === 200) {
                 message.success("登录成功")
+                dispatch(initUser((passwordLoginResponse.data) as IUser))
                 setStorage("user", JSON.stringify(passwordLoginResponse.data))
                 setStorage("authentication", JSON.stringify(((passwordLoginResponse.data) as LoginPasswordResponse).token))
                 navigateFunction("/home")

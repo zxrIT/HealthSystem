@@ -18,6 +18,9 @@ httpAxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 httpAxios.interceptors.response.use((response: AxiosResponse) => {
     return response.data
 }, (error: any) => {
+    if (error.response.status === 403) {
+        window.location.href = "/403"
+    }
     Promise.reject(error)
 })
 
