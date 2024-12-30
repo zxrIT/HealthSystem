@@ -3,7 +3,8 @@ import {createRoot} from 'react-dom/client'
 import {Provider} from 'react-redux'
 import store from './store'
 import App from './App.tsx'
-import "./assets/static/system/reset.less"
+import './includes/i18n.ts'
+import "./assets/static/less/reset.less"
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
@@ -12,3 +13,4 @@ createRoot(document.getElementById('root')!).render(
         </Provider>
     </StrictMode>,
 )
+

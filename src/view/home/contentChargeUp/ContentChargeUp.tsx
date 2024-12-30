@@ -16,6 +16,7 @@ import {UpdateOrDeleteEnum} from "../../../typing/enum";
 import {useForm} from "antd/es/form/Form";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
+import {useTranslation} from "react-i18next";
 
 const {TextArea} = Input;
 
@@ -25,7 +26,7 @@ const ContentChargeUp: FC = (): ReactElement => {
     const [total, setTotal] = useState<number>(0)
     const [page, setPage] = useState<number>(1)
     const [reRender, setReRender] = useState<boolean>(false)
-    const [paginationSize, setPaginationSize] = useState<number>(initPaginationSize)
+    const [paginationSize, _] = useState<number>(initPaginationSize)
     const [typeOfOperation, setTypeOfOperation] = useState<UpdateOrDeleteEnum>(UpdateOrDeleteEnum.update)
     const [bookKeepingChoice, setBookKeepingChoice] = useState<IBookingBookKeeping>({} as IBookingBookKeeping)
     const [bookKeepingData, setBookKeepingData] = useState<IBookingBookKeeping[]>([])
@@ -33,6 +34,12 @@ const ContentChargeUp: FC = (): ReactElement => {
     const [drawerStatus, setDrawerStatus] = useState(false);
     const [antdForm] = useForm()
     const {Column} = Table;
+    const [t, i18n] = useTranslation();
+    const topicSlice = useSelector((state: RootState) => state.topic);
+
+    useEffect(() => {
+        i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
+    }, [topicSlice.internationalization])
 
     const submitUpdateOrDelete = (payload: UpdateOrDeleteEnum) => {
         const bookKeepingObject: IBookingBookKeeping = antdForm.getFieldsValue() as IBookingBookKeeping
@@ -137,21 +144,21 @@ const ContentChargeUp: FC = (): ReactElement => {
                             &nbsp;&nbsp;&nbsp;&nbsp;商品说明:&nbsp;&nbsp;{bookKeepingChoice.productDescription}
                             &nbsp;&nbsp;&nbsp;&nbsp;收/支:&nbsp;&nbsp;{bookKeepingChoice.directionOfTrade === 0 ? "收入" : "支出"}
                         </p>
-                }} pagination={{pageSize: paginationSize, total: total}} onExpand={() => {
-                    setPaginationSize(paginationSize ===
-                        initPaginationSize ? initPaginationSize - 1 : initPaginationSize
-                    )
-                }} onChange={page => setPage(page.current as number)}>
-                    <Column className={contentChargeUp.overflow} title="交易单号" dataIndex="tradeOrderNumber"
+                }} pagination={{pageSize: paginationSize, total: total}}
+                       onChange={page => setPage(page.current as number)}>
+                    <Column className={contentChargeUp.overflow} title={t("Order number")} dataIndex="tradeOrderNumber"
                             key="tradeOrderNumber" align="center"/>
-                    <Column width={100} title="交易分类" dataIndex="transactionClassification" align="center"/>
-                    <Column className={contentChargeUp.overflow} title="商品说明" dataIndex="productDescription"
+                    <Column width={100} title={t("Order classification")} dataIndex="transactionClassification"
                             align="center"/>
-                    <Column width={100} title="交易金额" dataIndex="amountOfTransaction" align="center"/>
-                    <Column className={contentChargeUp.overflow} title="付款方式" dataIndex="modeOfTransaction"
+                    <Column className={contentChargeUp.overflow} title={t("Trade description")}
+                            dataIndex="productDescription"
+                            align="center"/>
+                    <Column width={100} title={t("Transaction amount")} dataIndex="amountOfTransaction" align="center"/>
+                    <Column className={contentChargeUp.overflow} title={t("Payment method")}
+                            dataIndex="modeOfTransaction"
                             align="center"/>
                     <Column
-                        title="操作"
+                        title={t("Controls")}
                         key="action"
                         align="center"
                         render={(_: any) => (
@@ -159,22 +166,23 @@ const ContentChargeUp: FC = (): ReactElement => {
                                 <Button type="primary" onClick={() => {
                                     setDrawerStatus(true)
                                     setTypeOfOperation(UpdateOrDeleteEnum.update)
-                                }}>修改</Button>
+                                }}>{t("edit")}</Button>
                                 <Button danger type="dashed" onClick={() => {
                                     setDrawerStatus(true)
                                     setTypeOfOperation(UpdateOrDeleteEnum.delete)
-                                }}>删除</Button>
+                                }}>{t("delete")}</Button>
                             </Space>
                         )}
                     />
                 </Table>
             </div>
-            <FloatButton type="primary" tooltip={<div>添加</div>} icon={<PlusOutlined/>} onClick={() => {
+            <FloatButton type="primary" tooltip={<div>{t("append")}</div>} icon={<PlusOutlined/>} onClick={() => {
                 setDrawerStatus(true)
                 setTypeOfOperation(UpdateOrDeleteEnum.create)
                 setBookKeepingChoice({} as IBookingBookKeeping)
             }}/>
-            <Drawer title={typeOfOperation} onClose={() => setDrawerStatus(false)} open={drawerStatus} width={400}>
+            <Drawer title={t(`${typeOfOperation}`)} onClose={() => setDrawerStatus(false)} open={drawerStatus}
+                    width={400}>
                 <Form
                     labelCol={{span: 8}}
                     wrapperCol={{span: 16}}
@@ -182,32 +190,35 @@ const ContentChargeUp: FC = (): ReactElement => {
                     style={{maxWidth: 400}}
                     form={antdForm}
                 >
-                    <Form.Item label="交易单唯一标识"
-                               tooltip="由该组消费记录的消费单号加密而来唯一标识，不可修改" name="id"
+                    <Form.Item label={t("identification")}
+                               tooltip={t("The unique identifier is encrypted from the purchase order number of the group of consumption records and cannot be modified")}
+                               name="id"
                                initialValue={bookKeepingChoice.id}>
                         <Input disabled={true}/>
                     </Form.Item>
-                    <Form.Item label="交易状态" rules={[{required: true, message: "交易状态不能为空"}]}
+                    <Form.Item label={t("Transaction status")}
+                               rules={[{required: true, message: t("The transaction status cannot be empty")}]}
                                name="transactionStatus"
                                initialValue={bookKeepingChoice.transactionStatus}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label="交易分类" rules={[{required: true, message: "交易分类不能为空"}]}
+                    <Form.Item label={t("Product classification")}
+                               rules={[{required: true, message: t("The transaction class cannot be empty")}]}
                                name="transactionClassification"
                                initialValue={bookKeepingChoice.transactionClassification}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label="交易对方"
-                               rules={[{required: true, message: "交易对方不能为空"}]}
+                    <Form.Item label={t("counterparty")}
+                               rules={[{required: true, message: t("The counterparty cannot be short")}]}
                                name="counterparty"
                                initialValue={bookKeepingChoice.counterparty}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label="商品描述" name="productDescription"
+                    <Form.Item label={t("Description")} name="productDescription"
                                initialValue={bookKeepingChoice.productDescription}>
                         <Input/>
                     </Form.Item>
-                    <Form.Item label="交易方向" tooltip="0为收入 1为支出"
+                    <Form.Item label={t("direction")} tooltip="0为收入 1为支出"
                                name="directionOfTrade"
                                rules={[{required: true, message: "交易方向不能为空且只能为0或1"},
                                    {

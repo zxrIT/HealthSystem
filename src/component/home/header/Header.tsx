@@ -1,10 +1,13 @@
 import {FC, ReactElement, useEffect} from "react"
 import {Fragment, useState} from "react"
 import header from "./Header.module.less"
-import {Button, Drawer} from "antd";
+import {Button, Drawer, Tooltip} from "antd";
 import {AlipayCircleOutlined, WechatOutlined} from "@ant-design/icons"
 import {Upload} from "../../../typing/enum/index";
 import UploadCheck from "../../../view/upload/UploadCheck.tsx";
+import {useTranslation} from "react-i18next";
+import {useSelector} from "react-redux";
+import {RootState} from "../../../store";
 
 const Header: FC = (): ReactElement => {
     const [income, setIncome] = useState<number>(111111.03)
@@ -12,6 +15,14 @@ const Header: FC = (): ReactElement => {
     const [open, setOpen] = useState<boolean>(false);
     const [uploadTitle, setUploadTitle] = useState<string>("")
     const [uploadComponent, setUploadComponent] = useState<Upload>()
+    const [t, i18n] = useTranslation();
+    const topicSlice = useSelector((state: RootState) => state.topic);
+
+    useEffect(() => {
+        i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
+    }, [topicSlice.internationalization])
+
+
     useEffect(() => {
         setIncome(income)
         setDisburse(disburse)
@@ -42,45 +53,49 @@ const Header: FC = (): ReactElement => {
             <div className={header.headerBox}>
                 <div className={header.moneyBox}>
                     <div className={header.money}>¥&nbsp;{income}</div>
-                    <div className={header.title}>收入</div>
+                    <div className={header.title}>{t("income")}</div>
                 </div>
                 <div className={header.moneyBox}>
                     <div className={header.money}>¥&nbsp;{disburse}</div>
-                    <div className={header.title}>支出</div>
+                    <div className={header.title}>{t("disburse")}</div>
                 </div>
                 <div className={header.echartsBox}>
                     <div className={header.echartsMoney}>
                         <div className={header.echartsLeftTop}>¥&nbsp;{income - disburse}</div>
-                        <div className={header.echartsLeftBottom}>结余</div>
+                        <div className={header.echartsLeftBottom}>{t("surplus")}</div>
                     </div>
                     <div className={header.echartsRender}>
                         <div className={header.upload}>
-                            <div>
-                                上一次上传时间
-                                2024-1-3
-                            </div>
+                            <Tooltip title={!topicSlice.internationalization ? "" : t("Last commit time")}>
+                                <div>
+                                    <div style={{marginBottom: 5}}>{t("Last start time")}</div>
+                                    2024-1-3
+                                </div>
+                            </Tooltip>
                             <Button icon={<AlipayCircleOutlined/>}
                                     type="primary"
                                     style={{marginTop: "20px"}}
                                     onClick={() => {
-                                        showDrawer("支付宝上传", Upload.ali)
+                                        showDrawer(t("Alipay upload"), Upload.ali)
                                     }}>
-                                支付宝上传
+                                {t("Alipay upload")}
                             </Button>
                         </div>
                         <div className={header.upload}>
-                            <div>
-                                上一次上传时间
-                                2024-1-3
-                            </div>
+                            <Tooltip title={!topicSlice.internationalization ? "" : t("Last commit time")}>
+                                <div>
+                                    <div style={{marginBottom: 5}}>{t("Last start time")}</div>
+                                    2024-1-3
+                                </div>
+                            </Tooltip>
                             <Button icon={<WechatOutlined/>} type="primary"
                                     style={{
                                         backgroundColor: "limegreen",
                                         marginTop: "20px"
                                     }} onClick={() => {
-                                showDrawer("微信上传", Upload.weiChect)
+                                showDrawer(t("Wechat upload"), Upload.weiChect)
                             }}>
-                                微信上传
+                                {t("Wechat upload")}
                             </Button>
                         </div>
                     </div>

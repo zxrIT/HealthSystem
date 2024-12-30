@@ -2,13 +2,21 @@ export enum LeftNavigateEnum {
     ChargeUp = 0,
     DayBook = 1,
     Calendar = 2,
-    AnnaAccount = 3
+    AnnaAccount = 3,
+    MySelf = 4
+}
+
+export enum LoginEnum {
+    Password = 0,
+    Message = 1,
+    Wechat = 2,
+    Weibo = 3
 }
 
 export enum UpdateOrDeleteEnum {
-    create = "新增详情",
-    update = "修改详情",
-    delete = "删除详情"
+    create = "Add details",
+    update = "Modify details",
+    delete = "Delete details"
 }
 
 export enum Upload {

@@ -1,16 +1,15 @@
 import uploadAli from "./UploadCheck.module.less"
 import {FC, ReactElement, useEffect, useState} from "react"
-import {Button, Form, Input, message, Upload} from 'antd';
 import type {GetProp, UploadFile, UploadProps} from 'antd';
+import {Button, Form, Input, message, Upload} from 'antd';
 import {Upload as UploadEnum} from "../../typing/enum";
 import {useForm} from "antd/es/form/Form";
 import {UploadOutlined} from "@ant-design/icons";
 import {IUploadCsv} from "../../typing/upload/upload.ts";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {changeTableReRenderStatus} from "../../store/slice/bookKeepingSlice.ts";
 import {BaseResponse} from "../../typing/response/baseResponse.ts";
 import {IUploadResult} from "../../typing/response/bookKeepingResponse";
-import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 
 interface IProps {
@@ -76,7 +75,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
     }, [uploadId]);
 
 
-    const handleUpload =() => {
+    const handleUpload = () => {
         const uploadObject: IUploadCsv = antdForm.getFieldsValue()
         antdForm.validateFields().then(async () => {
             const formData = new FormData();
@@ -84,36 +83,56 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                 formData.append('file', file as FileType);
             });
             setUploading(true);
-            fetch('http://localhost:10000/upload/csv/'
-                + uploadObject.username + "/" + userSlice.user.id + "/" +
-                (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
-                method: 'POST',
-                headers: {
-                    'Authorization': userSlice.user.token
-                },
-                body: formData,
-            }).then((res) => res.json())
-                .then((response: BaseResponse<IUploadResult>) => {
-                    if (response.code === 200) {
-                        setFileList([]);
-                        dispatch(changeTableReRenderStatus(true));
-                        message.success(response.data.uploadMessage);
-                        setUploadId(response.data.uploadId);
-                    } else {
-                        message.error(response.data.uploadMessage);
-                    }
-                }).catch(error => {
-                console.log(error);
-            }).finally(() => {
-                setUploading(false);
-            })
+            switch (uploadType) {
+                case UploadEnum.ali:
+                    fetch('http://localhost:10000/upload/csv/ali/'
+                        + uploadObject.username + "/" + userSlice.user.id + "/" +
+                        (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': userSlice.user.token
+                        },
+                        body: formData,
+                    }).then((res) => res.json())
+                        .then((response: BaseResponse<IUploadResult>) => {
+                            if (response.code === 200) {
+                                setFileList([]);
+                                dispatch(changeTableReRenderStatus(true));
+                                message.success(response.data.uploadMessage);
+                                setUploadId(response.data.uploadId);
+                            } else {
+                                message.error(response.data.uploadMessage);
+                            }
+                        }).finally(() => {
+                        setUploading(false)
+                    })
+                    break
+                case UploadEnum.weiChect:
+                    fetch('http://localhost:10000/upload/csv/weichat/'
+                        + uploadObject.username + "/" + userSlice.user.id + "/" +
+                        (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': userSlice.user.token
+                        },
+                        body: formData,
+                    }).then((res) => res.json())
+                        .then((response: BaseResponse<IUploadResult>) => {
+                            if (response.code === 200) {
+                                setFileList([]);
+                                dispatch(changeTableReRenderStatus(true));
+                                message.success(response.data.uploadMessage);
+                                setUploadId(response.data.uploadId);
+                            } else {
+                                message.error(response.data.uploadMessage);
+                            }
+                        }).finally(() => {
+                        setUploading(false)
+                    })
+            }
+
         })
     };
-
-
-    useEffect(() => {
-        console.log(uploadType)
-    }, [uploadType])
 
     const props: UploadProps = {
         onRemove: (file) => {

@@ -8,5 +8,6 @@ export interface LoginPasswordResponse {
     username: string
     id: string
     mobile: string
-    identityCard: string
+    identityCard: string,
+    imageUrl: string
 }

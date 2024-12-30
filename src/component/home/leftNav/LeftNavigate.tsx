@@ -1,4 +1,4 @@
-import type {FC, ReactElement} from "react"
+import {FC, ReactElement, useEffect} from "react"
 import {useState} from "react"
 import type {NavigateFunction} from "react-router-dom"
 import {useNavigate} from "react-router-dom"
@@ -9,14 +9,27 @@ import {
     LineChartOutlined,
     LogoutOutlined,
     PieChartOutlined,
-    SlidersOutlined,
+    SlidersOutlined, TeamOutlined,
     WarningOutlined
 } from "@ant-design/icons";
 import {LeftNavigateEnum, NavigateUrl} from "../../../typing/enum";
+import {useDispatch, useSelector} from "react-redux";
+import {RootState} from "../../../store";
+import {useTranslation} from "react-i18next";
+import {changeInternationalization} from "../../../store/slice/topicSlice.ts";
+import {Tooltip} from "antd";
 
 const LeftNavigate: FC = (): ReactElement => {
+    const [t, i18n] = useTranslation();
+    const user = useSelector((state: RootState) => state.user);
     const navigate: NavigateFunction = useNavigate()
+    const topicSlice = useSelector((state: RootState) => state.topic);
     const [loadingStatus, setLoadingStatus] = useState<LeftNavigateEnum>(LeftNavigateEnum.ChargeUp)
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
+    }, [topicSlice.internationalization])
 
     const changeLoadingStatus = (status: LeftNavigateEnum, navigateUrl: NavigateUrl): void => {
         setLoadingStatus(status)
@@ -26,41 +39,63 @@ const LeftNavigate: FC = (): ReactElement => {
     return (
         <div className={leftNavigate.leftBox}>
             <div className={leftNavigate.leftUserImg}>
-                <img src={mapImg} alt="userPicture"/>
+                <img src={user.user.imageUrl.length === 0 ? mapImg : user.user.imageUrl} alt="userPicture"/>
             </div>
-            <div className={leftNavigate.leftUserName}>秃头统治地球的健康账单</div>
-            <div className={leftNavigate.leftNav}
+            <div className={leftNavigate.leftUserName}>{user.user.username}{t("'s Health bill")}</div>
+            <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
                  style={loadingStatus === LeftNavigateEnum.ChargeUp ?
                      {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
                      {}}
                  onClick={() => {
                      changeLoadingStatus(LeftNavigateEnum.ChargeUp, NavigateUrl.home);
-                 }}><PieChartOutlined/>&nbsp;健康记账
+                 }}><PieChartOutlined/>&nbsp;{t("Health accounting")}
             </div>
-            <div className={leftNavigate.leftNav} style={loadingStatus === LeftNavigateEnum.DayBook ?
-                {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
-                {}}
+            <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
+                 style={loadingStatus === LeftNavigateEnum.DayBook ?
+                     {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
+                     {}}
                  onClick={() => {
                      changeLoadingStatus(LeftNavigateEnum.DayBook, NavigateUrl.dayBook)
-                 }}><BarChartOutlined/>&nbsp;日帐分析
+                 }}><BarChartOutlined/>&nbsp;{t("Journal analysis")}
             </div>
-            <div className={leftNavigate.leftNav} style={loadingStatus === LeftNavigateEnum.Calendar ?
-                {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
-                {}}
+            <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
+                 style={loadingStatus === LeftNavigateEnum.Calendar ?
+                     {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
+                     {}}
                  onClick={() => {
                      changeLoadingStatus(LeftNavigateEnum.Calendar, NavigateUrl.home)
-                 }}><SlidersOutlined/>&nbsp;日历分析
+                 }}><SlidersOutlined/>&nbsp;{t("Calendar analysis")}
             </div>
-            <div className={leftNavigate.leftNav} style={loadingStatus === LeftNavigateEnum.AnnaAccount ?
-                {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
-                {}}
+            <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
+                 style={loadingStatus === LeftNavigateEnum.AnnaAccount ?
+                     {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
+                     {}}
                  onClick={() => {
                      changeLoadingStatus(LeftNavigateEnum.AnnaAccount, NavigateUrl.dayBook)
-                 }}><LineChartOutlined/>&nbsp;年帐分析
+                 }}><LineChartOutlined/>&nbsp;{t("Annual analysis")}
             </div>
-            <div className={leftNavigate.leftMessage}>
-                <div><WarningOutlined/>&nbsp;预警</div>
-                <div><LogoutOutlined/>&nbsp;退出</div>
+            <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
+                 style={loadingStatus === LeftNavigateEnum.MySelf ?
+                     {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
+                     {}}
+                 onClick={() => {
+                     changeLoadingStatus(LeftNavigateEnum.MySelf, NavigateUrl.dayBook)
+                 }}><TeamOutlined/>&nbsp;{t("My information")}
+            </div>
+            <div className={!topicSlice.internationalization ? leftNavigate.leftMessage : leftNavigate.leftMessageEn}>
+                <Tooltip title={!topicSlice.internationalization ? "" : t("forewarning")} color="gold">
+                    <div onClick={() => {
+                        dispatch(changeInternationalization(!topicSlice.internationalization))
+                    }}><WarningOutlined/>&nbsp;
+                        <text
+                            style={{display: !topicSlice.internationalization ? "" : "none"}}>{t("forewarning")}</text>
+                    </div>
+                </Tooltip>
+                <Tooltip title={!topicSlice.internationalization ? "" : t("quit")} color="volcano">
+                    <div><LogoutOutlined/>&nbsp;
+                        <text style={{display: !topicSlice.internationalization ? "" : "none"}}>{t("quit")}</text>
+                    </div>
+                </Tooltip>
             </div>
         </div>
     )

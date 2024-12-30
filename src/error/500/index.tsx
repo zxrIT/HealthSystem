@@ -1,13 +1,13 @@
 import {FC, ReactElement, useEffect} from "react"
-import forbiddenStyle from "./index.module.less"
-import noPermission from "../../assets/static/system/svg/no-permission.svg"
+import serverErrorStyle from "./index.module.less"
+import serverError from "../../assets/static/system/svg/service-error.svg"
 import {Button, message} from "antd";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 
-const Forbidden: FC = (): ReactElement => {
+const ServerError: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
     const topicSlice = useSelector((state: RootState) => state.topic);
 
@@ -16,16 +16,16 @@ const Forbidden: FC = (): ReactElement => {
     }, [topicSlice.internationalization])
     const navigateFunction: NavigateFunction = useNavigate();
     useEffect(() => {
-        message.error(t("Login has expired or no login, please log in before using"))
+        message.error(t("Please try again later or contact the administrator to resolve the problem"))
     })
     return (
-        <div className={forbiddenStyle.forbiddenBox}>
-            <img className={forbiddenStyle.img} src={noPermission} alt="403"/>
+        <div className={serverErrorStyle.serverErrorBox}>
+            <img className={serverErrorStyle.img} src={serverError} alt="500"/>
             <Button type="primary" onClick={() => {
                 navigateFunction("/")
-            }}>{t("Go to login")}</Button>
+            }}>{t("Please try again later or contact the administrator to resolve the problem")}</Button>
         </div>
     )
 }
 
-export default Forbidden
+export default ServerError

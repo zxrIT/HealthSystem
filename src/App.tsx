@@ -6,6 +6,7 @@ import ContentChargeUp from "./view/home/contentChargeUp/ContentChargeUp";
 import ContentDayBook from "./view/home/contentDayBook/ContentDayBook";
 import WithAuthenticationHocComponent from "./HOC/WithAuthenticationHocComponent.tsx";
 import Forbidden from "./error/403";
+import ServerError from "./error/500";
 
 function App() {
     return (
@@ -18,8 +19,9 @@ function App() {
                             <Route path="/home/dayBook" element={<ContentDayBook/>}/>
                         </Route>
                         <Route path="/403" element={<Forbidden/>}/>
+                        <Route path="/500" element={<ServerError/>}/>
                         <Route path="/" element={<Login/>}/>
-                        <Route path="*" element={<Navigate to="/"/>}/>
+                        <Route path="*" element={<Navigate to="/login"/>}/>
                     </Routes>
                 </WithAuthenticationHocComponent>
             </BrowserRouter>

@@ -9,16 +9,19 @@
   justify-content: center;
   align-items: center;
 
-  .loginContext {
+  .loginContextDark {
     width: 500px;
     height: 550px;
-    background-color: #fff;
+    background-color: #18181C;
+    color: #DADADB;
     border-radius: 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    transition: color 1s background-color 1s;
 
     .loginTitle {
+      color: #DADADB;
       width: 100%;
       flex: 2;
       border-top-left-radius: 15px;
@@ -34,12 +37,13 @@
         flex: 1;
 
         img {
-          width: 70px;
-          height: 70px;
+          width: 80px;
+          height: 80px;
         }
       }
 
       .titleContent {
+        color: #DADADB;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -50,6 +54,7 @@
       }
 
       .titleBtn {
+        color: #DADADB;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -78,8 +83,13 @@
       width: 100%;
       flex: 2;
     }
+    .loginInputChoice {
+      width: 100%;
+      flex: 4;
+    }
 
     .loginRemember {
+      color: #DADADB;
       display: flex;
       flex-direction: row;
       align-items: center;
@@ -118,6 +128,125 @@
           width: 30px;
           height: 30px;
         }
+      }
+    }
+  }
+}
+
+.loginContextLight {
+  width: 500px;
+  height: 550px;
+  background-color: #fff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  transition: color 1s background-color 1s;
+
+  .loginTitle {
+    width: 100%;
+    flex: 2;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    .titleIcon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+
+      img {
+        width: 70px;
+        height: 70px;
+      }
+    }
+
+    .titleContent {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 2;
+      font-size: 40px;
+      font-weight: bold;
+      color: #646CFF;
+    }
+
+    .titleBtn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      flex: 1;
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
+    }
+  }
+
+  .loginTopic {
+    display: flex;
+    margin-left: 20px;
+    width: 100%;
+    flex: 1;
+    color: #646CFF;
+    font-size: 20px;
+    font-weight: bold;
+    align-items: center;
+  }
+
+  .loginInput {
+    width: 100%;
+    flex: 2;
+  }
+
+  .loginInputChoice {
+    width: 100%;
+    flex: 4;
+  }
+
+  .loginRemember {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    flex: 1;
+  }
+
+  .loginButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex: 1;
+  }
+
+  .loginOthers {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    margin-bottom: 20px;
+    width: 100%;
+    color: #646CFF;
+    flex: 1;
+
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      img {
+        margin-right: 20px;
+        width: 30px;
+        height: 30px;
       }
     }
   }
