@@ -25,7 +25,7 @@ const PieChartHealth: FC = (): ReactElement => {
         },
         series: [
             {
-                name: '访问来源',
+                name: t("Health Consumption System"),
                 type: 'pie',
                 radius: ['40%', '70%'],
                 center: ['50%', '60%'],

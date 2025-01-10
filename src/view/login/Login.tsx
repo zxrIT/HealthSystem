@@ -35,7 +35,7 @@ const Login: FC = (): ReactElement => {
     const navigateFunction: NavigateFunction = useNavigate();
     const dispatch = useDispatch();
     const [loginStatus, setLoginStatus] = useState<boolean>(false);
-    const {getStorage} = useLocalStorage()
+    const {getStorage, setStorage} = useLocalStorage()
     const token: string = JSON.parse(getStorage("authentication"))
     const user: IUser = JSON.parse(getStorage("user"))
     useEffect(() => {
@@ -84,6 +84,7 @@ const Login: FC = (): ReactElement => {
                     <div className={classModule.titleBtn}>
                         <div onClick={() => {
                             dispatch(changeTopic(!(topicSlice.topic)))
+                            setStorage("topic", JSON.stringify(!topicSlice.topic))
                         }}>
                             <img src={topicSlice.topic ? sunPng : darkPng} alt="Logo"/>
                         </div>
@@ -92,7 +93,10 @@ const Login: FC = (): ReactElement => {
                                 topicSlice.topic ? (!topicSlice.internationalization ? chinesePng : englishPng)
                                     : (!topicSlice.internationalization ? chineseDarkpng : englishDarkPng)
                             } style={{marginTop: 20}} alt="Logo" onClick={
-                                () => dispatch(changeInternationalization(!topicSlice.internationalization))
+                                () => {
+                                    dispatch(changeInternationalization(!topicSlice.internationalization))
+                                    setStorage("internationalization", JSON.stringify(!topicSlice.internationalization))
+                                }
                             }/>
                         </div>
                     </div>

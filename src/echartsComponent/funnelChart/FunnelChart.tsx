@@ -1,4 +1,4 @@
-import {FC, ReactElement, useEffect, useRef} from "react"
+import {FC, Fragment, ReactElement, useEffect, useRef} from "react"
 import classStyle from "./FunnelChart.module.less"
 import ReactECharts from "echarts-for-react";
 import echartsDark from "../../topic/echarts-dark.json"
@@ -6,6 +6,8 @@ import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import echartsNight from "../../topic/echarts.json";
+import {ConfigProvider, DatePicker, FloatButton, Form, Popover, theme} from "antd";
+import {HistoryOutlined} from "@ant-design/icons";
 
 const FunnelChart: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
@@ -104,14 +106,38 @@ const FunnelChart: FC = (): ReactElement => {
     }, [topicSlice.internationalization])
 
     return (
-        <div className={classStyle.funnelBox} ref={funnelChartRef}>
-            <ReactECharts
-                theme={topicSlice.topic ? echartsNight : echartsDark}
-                ref={funnelChartRef}
-                option={option}
-                style={{height: "100%", width: "100%"}}
-            />
-        </div>
+        <ConfigProvider theme={{algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm}}>
+            <Fragment>
+                <Popover content={
+                    <Fragment>
+                        <Form>
+                            <Form.Item
+                                label="DatePicker"
+                                name="DatePicker"
+                            >
+                                <DatePicker/>
+                            </Form.Item>
+                        </Form>
+                    </Fragment>
+                } title={t("Choose a Start time")}>
+                    <FloatButton
+                        tooltip={t("Click to select the start time")}
+                        shape="square"
+                        type="primary"
+                        style={{insetInlineEnd: 1100}}
+                        icon={<HistoryOutlined/>}
+                    />
+                </Popover>
+                <div className={classStyle.funnelBox} ref={funnelChartRef}>
+                    <ReactECharts
+                        theme={topicSlice.topic ? echartsNight : echartsDark}
+                        ref={funnelChartRef}
+                        option={option}
+                        style={{height: "100%", width: "100%"}}
+                    />
+                </div>
+            </Fragment>
+        </ConfigProvider>
     )
 }
 

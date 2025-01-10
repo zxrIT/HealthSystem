@@ -18,9 +18,11 @@ import {changeInternationalization, changeTopic} from "../../../store/slice/topi
 import mapImg from "../../../assets/static/system/icon/user.jpg";
 import Regex from "../../../util/Regex.ts";
 import {Tooltip} from "antd";
+import {useLocalStorage} from "../../../hooks/useLocalStorage.ts";
 
 const Config: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
+    const {setStorage} = useLocalStorage()
     const dispatch = useDispatch()
     const topicSlice = useSelector((state: RootState) => state.topic);
     const user = useSelector((state: RootState) => state.user);
@@ -44,11 +46,13 @@ const Config: FC = (): ReactElement => {
         <div className={topicSlice.topic ? classStyle.configBox : classStyle.configBoxDark}>
             <div className={classStyle.icon} onClick={() => {
                 dispatch(changeTopic(!topicSlice.topic))
+                setStorage("topic",JSON.stringify(!topicSlice.topic))
             }}>
                 <img src={topicSlice.topic ? sunPng : darkPng} alt="Logo"/>
             </div>
             <div className={classStyle.icon} onClick={() => {
                 dispatch(changeInternationalization(!topicSlice.internationalization))
+                setStorage("internationalization", JSON.stringify(!topicSlice.internationalization))
             }}>
                 <img src={topicSlice.topic ? (!topicSlice.internationalization ? chinesePng : englishPng)
                     : (!topicSlice.internationalization ? chineseDarkpng : englishDarkPng)} alt="Logo"/>

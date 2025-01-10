@@ -12,6 +12,7 @@ import {CSSTransition} from "react-transition-group";
 import {RootState} from "../../store";
 import "../../transition/transition.less"
 import {Location, useLocation} from "react-router-dom";
+import {NavigateUrl} from "../../typing/enum";
 
 const HealthIndex: FC = (): ReactElement => {
     const [transitionStatus, setTransitionStatus] = useState<boolean>(false);
@@ -36,7 +37,7 @@ const HealthIndex: FC = (): ReactElement => {
                 <div className={healthIndex.content}>
                     <Config/>
                     <Fragment>
-                        {location.pathname === "/home/CalendarAnalysis" ? <></> : <Header/>}
+                        {location.pathname === NavigateUrl.calendarAnalysis ? <></> : <Header/>}
                     </Fragment>
                     <Content/>
                 </div>

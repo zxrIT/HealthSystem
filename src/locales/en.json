@@ -98,6 +98,22 @@
     "Normal overflow range": "Normal overflow range",
     "overflow": "overflow",
     "Amount of excess": "Amount of excess",
-    "loading": "loading"
+    "loading": "loading",
+    "Merchant consumption": "Merchant consumption",
+    "Medical and Health": "Medical and Health",
+    "Click to select the start time": "Click to select the start time",
+    "Choose a Start time": "Choose a Start time",
+    "Proportion": "Proportion",
+    "Agent matters": "Agent matters",
+    "Enter add ": "Enter add",
+    "Email reminder": "Email reminder",
+    "User information": "User information",
+    "Authentication status": "Authentication status",
+    "username": "username",
+    "mobile": "mobile",
+    "Identification number": "Identification number",
+    "e-mail": "e-mail",
+    "Successful authentication": "Successful authentication",
+    "Not authenticated": "Not authenticated"
   }
 }

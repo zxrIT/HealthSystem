@@ -15,7 +15,7 @@ const CalendarAnalysis: FC = (): ReactElement => {
             algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm
         }}>
             <div className={calenderStyle.calenderBox}>
-                <Calendar onPanelChange={onPanelChange}/>
+                <Calendar showWeek={true} onPanelChange={onPanelChange}/>
             </div>
         </ConfigProvider>
     )

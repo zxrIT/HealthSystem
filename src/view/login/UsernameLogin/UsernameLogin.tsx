@@ -1,6 +1,6 @@
 import {FC, Fragment, ReactElement, useEffect} from "react"
 import classModule from "./UsernameLogin.module.less"
-import {ConfigProvider, Form, Input, message} from 'antd';
+import {ConfigProvider, Form, Input, message, theme} from 'antd';
 import {useForm} from "antd/es/form/Form";
 import {passwordLoginService} from "../../../service/loginService";
 import {BaseResponse} from "../../../typing/response/baseResponse.ts";
@@ -53,15 +53,7 @@ const UsernameLogin: FC<IProps> = ({status}): ReactElement => {
     }, [status]);
 
     return (
-        <ConfigProvider theme={{
-            components: {
-                Input: {
-                    activeBg: (topicSlice.topic) ? "" : "#636CFF",
-                    colorBgContainer: (topicSlice.topic) ? "#fff" : "#303033",
-                    colorTextDescription: topicSlice.topic ? "#333639" : "#fff",
-                }
-            }
-        }}>
+        <ConfigProvider theme={{algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm}}>
             <Fragment>
                 <Form
                     name="basic"
