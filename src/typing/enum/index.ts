@@ -26,5 +26,8 @@ export enum Upload {
 
 export enum NavigateUrl {
     home = "/home/",
-    dayBook = "/home/dayBook"
+    dayBook = "/home/dayBook",
+    myInformation = "/home/myInformation",
+    annualAccountAnalysis = "/home/AnnualAccountAnalysis",
+    calendarAnalysis = "/home/CalendarAnalysis",
 }

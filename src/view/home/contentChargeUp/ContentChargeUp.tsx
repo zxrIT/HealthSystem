@@ -1,6 +1,6 @@
 import {FC, ReactElement} from "react"
 import {Fragment, useEffect, useState} from "react"
-import {Button, DatePicker, Drawer, FloatButton, Form, Input, message, Space, Table} from 'antd';
+import {Button, ConfigProvider, DatePicker, Drawer, FloatButton, Form, Input, message, Space, Table, theme} from 'antd';
 import contentChargeUp from "./ContentChargeUp.module.less"
 import {PlusOutlined} from "@ant-design/icons"
 import type {IBookingBookKeeping, IBookingBookKeepingDisplay} from "../../../typing/bookKeeping/bookKeeping.ts"
@@ -76,7 +76,7 @@ const ContentChargeUp: FC = (): ReactElement => {
                     }
             }
         }).catch(() => {
-            message.error("字段校验没有通过，请通过提示完成字段填写")
+            message.error("The field validation did not pass, please complete the field by prompting")
         })
     }
 
@@ -114,158 +114,167 @@ const ContentChargeUp: FC = (): ReactElement => {
 
     const validateAmountOfTransaction = (_: any, value: any) => {
         if (value <= 0) {
-            return Promise.reject(new Error('交易金额必须为正整数'));
+            return Promise.reject(new Error(t("The transaction amount must be a positive integer")));
         }
         return Promise.resolve()
     }
 
     return (
-        <Fragment>
-            <div className={contentChargeUp.chargeUpBox}>
-                <Table loading={bookKeepingSlice.tableReRenderStatus} onRow={(record) => {
-                    return {
-                        onMouseEnter: () => {
-                            setBookKeepingChoice(() => {
-                                for (let i = 0; i < bookKeepingData.length; i++) {
-                                    if ((bookKeepingData[i]).tradeOrderNumber === record.key) {
-                                        return bookKeepingData[i]
+        <ConfigProvider theme={{
+            algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm
+        }}>
+            <Fragment>
+                <div className={contentChargeUp.chargeUpBox}>
+                    <Table loading={bookKeepingSlice.tableReRenderStatus} onRow={(record) => {
+                        return {
+                            onMouseEnter: () => {
+                                setBookKeepingChoice(() => {
+                                    for (let i = 0; i < bookKeepingData.length; i++) {
+                                        if ((bookKeepingData[i]).tradeOrderNumber === record.key) {
+                                            return bookKeepingData[i]
+                                        }
                                     }
-                                }
-                                return {} as IBookingBookKeeping
-                            })
+                                    return {} as IBookingBookKeeping
+                                })
+                            }
                         }
-                    }
-                }} dataSource={bookKeepingDataDisplay} expandable={{
-                    expandedRowRender: () =>
-                        <p style={{margin: 0}}>
-                            交易分类&nbsp;:&nbsp;{bookKeepingChoice.transactionClassification}
-                            &nbsp;&nbsp;&nbsp;交易方&nbsp;:&nbsp;{bookKeepingChoice.counterparty}
-                            &nbsp;&nbsp;&nbsp;&nbsp;交易状态:&nbsp;&nbsp;{bookKeepingChoice.transactionStatus}
-                            &nbsp;&nbsp;&nbsp;&nbsp;商品说明:&nbsp;&nbsp;{bookKeepingChoice.productDescription}
-                            &nbsp;&nbsp;&nbsp;&nbsp;收/支:&nbsp;&nbsp;{bookKeepingChoice.directionOfTrade === 0 ? "收入" : "支出"}
-                        </p>
-                }} pagination={{pageSize: paginationSize, total: total}}
-                       onChange={page => setPage(page.current as number)}>
-                    <Column className={contentChargeUp.overflow} title={t("Order number")} dataIndex="tradeOrderNumber"
-                            key="tradeOrderNumber" align="center"/>
-                    <Column width={100} title={t("Order classification")} dataIndex="transactionClassification"
-                            align="center"/>
-                    <Column className={contentChargeUp.overflow} title={t("Trade description")}
-                            dataIndex="productDescription"
-                            align="center"/>
-                    <Column width={100} title={t("Transaction amount")} dataIndex="amountOfTransaction" align="center"/>
-                    <Column className={contentChargeUp.overflow} title={t("Payment method")}
-                            dataIndex="modeOfTransaction"
-                            align="center"/>
-                    <Column
-                        title={t("Controls")}
-                        key="action"
-                        align="center"
-                        render={(_: any) => (
-                            <Space size="middle">
-                                <Button type="primary" onClick={() => {
-                                    setDrawerStatus(true)
-                                    setTypeOfOperation(UpdateOrDeleteEnum.update)
-                                }}>{t("edit")}</Button>
-                                <Button danger type="dashed" onClick={() => {
-                                    setDrawerStatus(true)
-                                    setTypeOfOperation(UpdateOrDeleteEnum.delete)
-                                }}>{t("delete")}</Button>
-                            </Space>
-                        )}
-                    />
-                </Table>
-            </div>
-            <FloatButton type="primary" tooltip={<div>{t("append")}</div>} icon={<PlusOutlined/>} onClick={() => {
-                setDrawerStatus(true)
-                setTypeOfOperation(UpdateOrDeleteEnum.create)
-                setBookKeepingChoice({} as IBookingBookKeeping)
-            }}/>
-            <Drawer title={t(`${typeOfOperation}`)} onClose={() => setDrawerStatus(false)} open={drawerStatus}
-                    width={400}>
-                <Form
-                    labelCol={{span: 8}}
-                    wrapperCol={{span: 16}}
-                    layout="horizontal"
-                    style={{maxWidth: 400}}
-                    form={antdForm}
-                >
-                    <Form.Item label={t("identification")}
-                               tooltip={t("The unique identifier is encrypted from the purchase order number of the group of consumption records and cannot be modified")}
-                               name="id"
-                               initialValue={bookKeepingChoice.id}>
-                        <Input disabled={true}/>
-                    </Form.Item>
-                    <Form.Item label={t("Transaction status")}
-                               rules={[{required: true, message: t("The transaction status cannot be empty")}]}
-                               name="transactionStatus"
-                               initialValue={bookKeepingChoice.transactionStatus}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label={t("Product classification")}
-                               rules={[{required: true, message: t("The transaction class cannot be empty")}]}
-                               name="transactionClassification"
-                               initialValue={bookKeepingChoice.transactionClassification}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label={t("counterparty")}
-                               rules={[{required: true, message: t("The counterparty cannot be short")}]}
-                               name="counterparty"
-                               initialValue={bookKeepingChoice.counterparty}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label={t("Description")} name="productDescription"
-                               initialValue={bookKeepingChoice.productDescription}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label={t("direction")} tooltip="0为收入 1为支出"
-                               name="directionOfTrade"
-                               rules={[{required: true, message: "交易方向不能为空且只能为0或1"},
-                                   {
-                                       validator: (_, value) => {
-                                           if (parseInt(value) !== 0 && parseInt(value) !== 1) {
-                                               return Promise.reject(new Error("交易方向只能为0或1"))
-                                           }
-                                           return Promise.resolve()
-                                       }
+                    }} dataSource={bookKeepingDataDisplay} expandable={{
+                        expandedRowRender: () =>
+                            <p style={{margin: 0}}>
+                                {t("Transaction classification")}&nbsp;:&nbsp;{bookKeepingChoice.transactionClassification}
+                                &nbsp;&nbsp;&nbsp;{t("counterparty")}&nbsp;:&nbsp;{bookKeepingChoice.counterparty}
+                                &nbsp;&nbsp;&nbsp;&nbsp;{t("Transaction status")}:&nbsp;&nbsp;{bookKeepingChoice.transactionStatus}
+                                &nbsp;&nbsp;&nbsp;&nbsp;{t("Product Description")}:&nbsp;&nbsp;{bookKeepingChoice.productDescription}
+                                &nbsp;&nbsp;&nbsp;&nbsp;{`${t("income")}\\${t("disburse")}`}:&nbsp;&nbsp;{bookKeepingChoice.directionOfTrade === 0 ? t("income") : t("disburse")}
+                            </p>
+                    }} pagination={{pageSize: paginationSize, total: total}}
+                           onChange={page => setPage(page.current as number)}>
+                        <Column className={contentChargeUp.overflow} title={t("Order number")}
+                                dataIndex="tradeOrderNumber"
+                                key="tradeOrderNumber" align="center"/>
+                        <Column width={100} title={t("Order classification")} dataIndex="transactionClassification"
+                                align="center"/>
+                        <Column className={contentChargeUp.overflow} title={t("Trade description")}
+                                dataIndex="productDescription"
+                                align="center"/>
+                        <Column width={100} title={t("Transaction amount")} dataIndex="amountOfTransaction"
+                                align="center"/>
+                        <Column className={contentChargeUp.overflow} title={t("Payment method")}
+                                dataIndex="modeOfTransaction"
+                                align="center"/>
+                        <Column
+                            title={t("Controls")}
+                            key="action"
+                            align="center"
+                            render={(_: any) => (
+                                <Space size="middle">
+                                    <Button type="primary" onClick={() => {
+                                        setDrawerStatus(true)
+                                        setTypeOfOperation(UpdateOrDeleteEnum.update)
+                                    }}>{t("edit")}</Button>
+                                    <Button danger type="dashed" onClick={() => {
+                                        setDrawerStatus(true)
+                                        setTypeOfOperation(UpdateOrDeleteEnum.delete)
+                                    }}>{t("delete")}</Button>
+                                </Space>
+                            )}
+                        />
+                    </Table>
+                </div>
+                <FloatButton type="primary" tooltip={<div>{t("append")}</div>} icon={<PlusOutlined/>} onClick={() => {
+                    setDrawerStatus(true)
+                    setTypeOfOperation(UpdateOrDeleteEnum.create)
+                    setBookKeepingChoice({} as IBookingBookKeeping)
+                }}/>
+                <Drawer title={t(`${typeOfOperation}`)} onClose={() => setDrawerStatus(false)} open={drawerStatus}
+                        width={400}>
+                    <Form
+                        labelCol={{span: 8}}
+                        wrapperCol={{span: 16}}
+                        layout="horizontal"
+                        style={{maxWidth: 400}}
+                        form={antdForm}
+                    >
+                        <Form.Item label={t("identification")}
+                                   tooltip={t("The unique identifier is encrypted from the purchase order number of the group of consumption records and cannot be modified")}
+                                   name="id"
+                                   initialValue={bookKeepingChoice.id}>
+                            <Input disabled={true}/>
+                        </Form.Item>
+                        <Form.Item label={t("Transaction status")}
+                                   rules={[{required: true, message: t("The transaction status cannot be empty")}]}
+                                   name="transactionStatus"
+                                   initialValue={bookKeepingChoice.transactionStatus}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("Product classification")}
+                                   rules={[{required: true, message: t("The transaction class cannot be empty")}]}
+                                   name="transactionClassification"
+                                   initialValue={bookKeepingChoice.transactionClassification}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("counterparty")}
+                                   rules={[{required: true, message: t("The counterparty cannot be short")}]}
+                                   name="counterparty"
+                                   initialValue={bookKeepingChoice.counterparty}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("Description")} name="productDescription"
+                                   initialValue={bookKeepingChoice.productDescription}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("direction")} tooltip={t("0 is income and 1 is expenditure")}
+                                   name="directionOfTrade"
+                                   rules={[{
+                                       required: true,
+                                       message: t("The trading direction cannot be null and can only be 0 or 1")
                                    },
-                               ]}
-                               initialValue={bookKeepingChoice.directionOfTrade}>
-                        <Input type="number"/>
-                    </Form.Item>
-                    <Form.Item label="交易金额" name="amountOfTransaction"
-                               rules={[{validator: validateAmountOfTransaction}, {
-                                   required: true,
-                                   message: "交易金额不能为空"
-                               }]}
-                               initialValue={bookKeepingChoice.amountOfTransaction}>
-                        <Input type="number"/>
-                    </Form.Item>
-                    <Form.Item label="交易方式" name="modeOfTransaction"
-                               initialValue={bookKeepingChoice.modeOfTransaction}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label="交易单号" name="tradeOrderNumber"
-                               rules={[{required: true, message: "交易单号不能为空"}]}
-                               initialValue={bookKeepingChoice.tradeOrderNumber}>
-                        <Input/>
-                    </Form.Item>
-                    <Form.Item label="交易时间" name="tradingHours">
-                        <DatePicker/>
-                    </Form.Item>
-                    <Form.Item label="交易备注" name="remarks" initialValue={bookKeepingChoice.remarks}>
-                        <TextArea rows={4}/>
-                    </Form.Item>
-                    {
-                        typeOfOperation === UpdateOrDeleteEnum.update || typeOfOperation === UpdateOrDeleteEnum.create ?
-                            <Button type="primary" block
-                                    onClick={() => submitUpdateOrDelete(typeOfOperation)}>提交</Button> :
-                            <Button danger type="primary" block
-                                    onClick={() => submitUpdateOrDelete(typeOfOperation)}>删除</Button>
-                    }
-                </Form>
-            </Drawer>
-        </Fragment>
+                                       {
+                                           validator: (_, value) => {
+                                               if (parseInt(value) !== 0 && parseInt(value) !== 1) {
+                                                   return Promise.reject(new Error(t("The trading direction cannot be null and can only be 0 or 1")))
+                                               }
+                                               return Promise.resolve()
+                                           }
+                                       },
+                                   ]}
+                                   initialValue={bookKeepingChoice.directionOfTrade}>
+                            <Input type="number"/>
+                        </Form.Item>
+                        <Form.Item label={t("Amount")} name="amountOfTransaction"
+                                   rules={[{validator: validateAmountOfTransaction}, {
+                                       required: true,
+                                       message: t("The transaction amount cannot be empty")
+                                   }]}
+                                   initialValue={bookKeepingChoice.amountOfTransaction}>
+                            <Input type="number"/>
+                        </Form.Item>
+                        <Form.Item label={t("transaction")} name="modeOfTransaction"
+                                   initialValue={bookKeepingChoice.modeOfTransaction}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("order number")} name="tradeOrderNumber"
+                                   rules={[{required: true, message: t("The order number cannot be empty")}]}
+                                   initialValue={bookKeepingChoice.tradeOrderNumber}>
+                            <Input/>
+                        </Form.Item>
+                        <Form.Item label={t("Trading hours")} name="tradingHours">
+                            <DatePicker/>
+                        </Form.Item>
+                        <Form.Item label={t("Remarks")} name="remarks" initialValue={bookKeepingChoice.remarks}>
+                            <TextArea rows={4}/>
+                        </Form.Item>
+                        {
+                            typeOfOperation === UpdateOrDeleteEnum.update || typeOfOperation === UpdateOrDeleteEnum.create ?
+                                <Button type="primary" block
+                                        onClick={() => submitUpdateOrDelete(typeOfOperation)}>{t("Submit")}</Button> :
+                                <Button danger type="primary" block
+                                        onClick={() => submitUpdateOrDelete(typeOfOperation)}>{t("delete")}</Button>
+                        }
+                    </Form>
+                </Drawer>
+            </Fragment>
+        </ConfigProvider>
     )
 }
 

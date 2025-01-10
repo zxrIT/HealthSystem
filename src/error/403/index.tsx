@@ -19,7 +19,7 @@ const Forbidden: FC = (): ReactElement => {
         message.error(t("Login has expired or no login, please log in before using"))
     })
     return (
-        <div className={forbiddenStyle.forbiddenBox}>
+        <div className={topicSlice.topic ? forbiddenStyle.forbiddenBox : forbiddenStyle.forbiddenBoxDark}>
             <img className={forbiddenStyle.img} src={noPermission} alt="403"/>
             <Button type="primary" onClick={() => {
                 navigateFunction("/")

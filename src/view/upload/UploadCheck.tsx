@@ -1,6 +1,6 @@
 import uploadAli from "./UploadCheck.module.less"
 import {FC, ReactElement, useEffect, useState} from "react"
-import type {GetProp, UploadFile, UploadProps} from 'antd';
+import {GetProp, UploadFile, UploadProps} from 'antd';
 import {Button, Form, Input, message, Upload} from 'antd';
 import {Upload as UploadEnum} from "../../typing/enum";
 import {useForm} from "antd/es/form/Form";
@@ -11,6 +11,7 @@ import {changeTableReRenderStatus} from "../../store/slice/bookKeepingSlice.ts";
 import {BaseResponse} from "../../typing/response/baseResponse.ts";
 import {IUploadResult} from "../../typing/response/bookKeepingResponse";
 import {RootState} from "../../store";
+import {useTranslation} from "react-i18next";
 
 interface IProps {
     uploadTitle: string,
@@ -31,23 +32,29 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
     const [uploadEndStatus, setUploadEndStatus] = useState<boolean>(false);
     const [uploading, setUploading] = useState(false);
     const [antdForm] = useForm()
+    const [t, i18n] = useTranslation();
+    const topicSlice = useSelector((state: RootState) => state.topic);
+
+    useEffect(() => {
+        i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
+    }, [topicSlice.internationalization])
 
     useEffect(() => {
         if (typeof (WebSocket) === "undefined") {
-            message.error("您的浏览器版本太低请使用新版的浏览器")
+            message.error(t("Your browser version is too low. Please use a newer browser"))
         }
     }, []);
 
     useEffect(() => {
         if (uploadId.length === 0) return
-        const websocket = new WebSocket("ws://localhost:8040/upload/csv/status");
+        const websocket = new WebSocket(import.meta.env.VITE_UPLOAD_STATUS_WEBSOCKET_URL);
         websocket.onopen = () => {
             console.log("websocket open");
         }
         const timer = setTimeout(() => {
             if (!uploadEndStatus) {
                 dispatch(changeTableReRenderStatus(false));
-                message.error("数据处理失败请稍后重试");
+                message.error(t("Data processing failed. Please try again later"));
                 changeDrawerStatus(false)
             }
             websocket.close()
@@ -65,10 +72,10 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                 clearInterval(sendMessageTimer)
                 setUploadEndStatus(true)
                 changeDrawerStatus(false)
-                message.success("数据处理成功")
+                message.success(t("Data processing was successful"))
             } else if (event.data === "error") {
                 dispatch(changeTableReRenderStatus(false));
-                message.error("服务器异常请稍后重试");
+                message.error(t("Server exception Please try again later"));
                 changeDrawerStatus(false)
             }
         }
@@ -85,7 +92,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
             setUploading(true);
             switch (uploadType) {
                 case UploadEnum.ali:
-                    fetch('http://localhost:10000/upload/csv/ali/'
+                    fetch(import.meta.env.VITE_UPLOAD_ALI_URL
                         + uploadObject.username + "/" + userSlice.user.id + "/" +
                         (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
                         method: 'POST',
@@ -108,7 +115,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                     })
                     break
                 case UploadEnum.weiChect:
-                    fetch('http://localhost:10000/upload/csv/weichat/'
+                    fetch(import.meta.env.VITE_UPLOAD_WECHAT_URL
                         + uploadObject.username + "/" + userSlice.user.id + "/" +
                         (uploadObject.notesOnBills === undefined ? "upload" : uploadObject.notesOnBills), {
                         method: 'POST',
@@ -151,7 +158,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
     };
 
     return (
-        <div className={uploadAli.uploadBox}>
+        <div className={topicSlice.topic ? uploadAli.uploadBox : uploadAli.uploadBoxDark}>
             <div className={uploadAli.navigate}>{uploadTitle}</div>
             <div className={uploadAli.uploadForm}>
                 <Form
@@ -162,18 +169,18 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                     form={antdForm}
                     style={{maxWidth: "100%"}}
                 >
-                    <Form.Item label="提交人"
-                               rules={[{required: true, message: "提交人不能为空"}]}
+                    <Form.Item label={t("Author")}
+                               rules={[{required: true, message: t("The submitter cannot be empty")}]}
                                name="username">
                         <Input/>
                     </Form.Item>
-                    <Form.Item label="账单备注" name="notesOnBills">
+                    <Form.Item label={t("Notes on bills")} name="notesOnBills">
                         <TextArea rows={4}/>
                     </Form.Item>
-                    <Form.Item label="上传文件">
+                    <Form.Item label={t("Uploading files")}>
                         <Upload {...props}>
                             <Button icon={<UploadOutlined/>}
-                                    disabled={!selectStatus}>选择文件</Button>
+                                    disabled={!selectStatus}>{t("Select file")}</Button>
                         </Upload>
                     </Form.Item>
                 </Form>
@@ -185,7 +192,7 @@ const UploadCheck: FC<IProps> = ({uploadTitle, uploadType, changeDrawerStatus}):
                     style={{marginTop: 16}}
                     block
                 >
-                    {uploading ? '正在上传' : '上传'}
+                    {uploading ? t("Uploading") : t("Upload")}
                 </Button>
             </div>
         </div>

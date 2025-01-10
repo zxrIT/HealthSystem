@@ -33,7 +33,7 @@ const WeChatLogin: FC = (): ReactElement => {
         }
     }, []);
     useEffect(() => {
-        fetch('http://localhost:10000/authentication/wechat/login/' + loginId)
+        fetch(import.meta.env.VITE_WECHAT_LOGIN_URL + loginId)
             .then(response => response.blob())
             .then(blob => {
                 const objectURL: string = URL.createObjectURL(blob);
@@ -44,7 +44,7 @@ const WeChatLogin: FC = (): ReactElement => {
     useEffect(() => {
         if (!webSocketStatus) return;
         setWebSocketStatus(true);
-        const webSocket = new WebSocket("ws://localhost:8040/wechat/login/status/" + loginId)
+        const webSocket = new WebSocket(import.meta.env.VITE_WECHAT_LOGIN_STATUS_WEBSOCKET_URL + loginId)
         webSocket.onopen = () => {
             console.log("websocket open");
         }

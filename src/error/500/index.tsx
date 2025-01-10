@@ -14,12 +14,13 @@ const ServerError: FC = (): ReactElement => {
     useEffect(() => {
         i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
     }, [topicSlice.internationalization])
+
     const navigateFunction: NavigateFunction = useNavigate();
     useEffect(() => {
         message.error(t("Please try again later or contact the administrator to resolve the problem"))
     })
     return (
-        <div className={serverErrorStyle.serverErrorBox}>
+        <div className={topicSlice.topic ? serverErrorStyle.serverErrorBox : serverErrorStyle.serverErrorBoxDark}>
             <img className={serverErrorStyle.img} src={serverError} alt="500"/>
             <Button type="primary" onClick={() => {
                 navigateFunction("/")

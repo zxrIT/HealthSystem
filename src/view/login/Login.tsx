@@ -23,16 +23,25 @@ import WeiboLogin from "./WeiboLogin/WeiboLogin.tsx";
 import MessageLogin from "./MessageLogin/MessageLogin.tsx";
 import UsernameLogin from "./UsernameLogin/UsernameLogin.tsx";
 import {useTranslation} from "react-i18next";
+import {IUser} from "../../typing/user/user.ts";
+import {useLocalStorage} from "../../hooks/useLocalStorage.ts";
+import {NavigateFunction, useNavigate} from "react-router-dom";
 
 
 const Login: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
     const topicSlice = useSelector((state: RootState) => state.topic);
     const [loginWay, setLoginWay] = useState<LoginEnum>(LoginEnum.Password)
+    const navigateFunction: NavigateFunction = useNavigate();
     const dispatch = useDispatch();
     const [loginStatus, setLoginStatus] = useState<boolean>(false);
-
+    const {getStorage} = useLocalStorage()
+    const token: string = JSON.parse(getStorage("authentication"))
+    const user: IUser = JSON.parse(getStorage("user"))
     useEffect(() => {
+        if (token && user && token.length > 0 && Object.keys(user).length > 0) {
+            navigateFunction("/home")
+        }
         i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
     }, [topicSlice.internationalization])
 

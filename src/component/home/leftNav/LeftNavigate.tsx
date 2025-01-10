@@ -13,10 +13,9 @@ import {
     WarningOutlined
 } from "@ant-design/icons";
 import {LeftNavigateEnum, NavigateUrl} from "../../../typing/enum";
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
 import {useTranslation} from "react-i18next";
-import {changeInternationalization} from "../../../store/slice/topicSlice.ts";
 import {Tooltip} from "antd";
 
 const LeftNavigate: FC = (): ReactElement => {
@@ -25,7 +24,6 @@ const LeftNavigate: FC = (): ReactElement => {
     const navigate: NavigateFunction = useNavigate()
     const topicSlice = useSelector((state: RootState) => state.topic);
     const [loadingStatus, setLoadingStatus] = useState<LeftNavigateEnum>(LeftNavigateEnum.ChargeUp)
-    const dispatch = useDispatch()
 
     useEffect(() => {
         i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
@@ -37,7 +35,7 @@ const LeftNavigate: FC = (): ReactElement => {
     }
 
     return (
-        <div className={leftNavigate.leftBox}>
+        <div className={topicSlice.topic ? leftNavigate.leftBox : leftNavigate.leftBoxDark}>
             <div className={leftNavigate.leftUserImg}>
                 <img src={user.user.imageUrl.length === 0 ? mapImg : user.user.imageUrl} alt="userPicture"/>
             </div>
@@ -63,7 +61,7 @@ const LeftNavigate: FC = (): ReactElement => {
                      {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
                      {}}
                  onClick={() => {
-                     changeLoadingStatus(LeftNavigateEnum.Calendar, NavigateUrl.home)
+                     changeLoadingStatus(LeftNavigateEnum.Calendar, NavigateUrl.calendarAnalysis)
                  }}><SlidersOutlined/>&nbsp;{t("Calendar analysis")}
             </div>
             <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
@@ -71,7 +69,7 @@ const LeftNavigate: FC = (): ReactElement => {
                      {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
                      {}}
                  onClick={() => {
-                     changeLoadingStatus(LeftNavigateEnum.AnnaAccount, NavigateUrl.dayBook)
+                     changeLoadingStatus(LeftNavigateEnum.AnnaAccount, NavigateUrl.annualAccountAnalysis)
                  }}><LineChartOutlined/>&nbsp;{t("Annual analysis")}
             </div>
             <div className={!topicSlice.internationalization ? leftNavigate.leftNav : leftNavigate.leftNavEn}
@@ -79,14 +77,12 @@ const LeftNavigate: FC = (): ReactElement => {
                      {border: "2px solid aliceblue", color: "cornflowerblue", backgroundColor: "aliceblue"} :
                      {}}
                  onClick={() => {
-                     changeLoadingStatus(LeftNavigateEnum.MySelf, NavigateUrl.dayBook)
+                     changeLoadingStatus(LeftNavigateEnum.MySelf, NavigateUrl.myInformation)
                  }}><TeamOutlined/>&nbsp;{t("My information")}
             </div>
             <div className={!topicSlice.internationalization ? leftNavigate.leftMessage : leftNavigate.leftMessageEn}>
                 <Tooltip title={!topicSlice.internationalization ? "" : t("forewarning")} color="gold">
-                    <div onClick={() => {
-                        dispatch(changeInternationalization(!topicSlice.internationalization))
-                    }}><WarningOutlined/>&nbsp;
+                    <div><WarningOutlined/>&nbsp;
                         <text
                             style={{display: !topicSlice.internationalization ? "" : "none"}}>{t("forewarning")}</text>
                     </div>
