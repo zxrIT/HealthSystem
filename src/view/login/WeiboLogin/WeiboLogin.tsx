@@ -1,8 +1,10 @@
-import type {FC , ReactElement} from "react"
+import {FC, ReactElement} from "react"
+import classStyle from "./WeiboLogin.module.less"
 
 const WeiboLogin: FC = (): ReactElement => {
     return (
-        <div>
+        <div className={classStyle.weiboLoginBox}>
+
         </div>
     )
 }

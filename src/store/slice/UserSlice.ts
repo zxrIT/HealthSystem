@@ -3,7 +3,7 @@ import {IUser} from "../../typing/user/user.ts";
 
 const UserSlice = createSlice({
     name: "User",
-    initialState: {user: {id: "", identityCard: "", mobile: "", token: "", username: "", imageUrl: ""}},
+    initialState: {user: {id: "", identityCard: "", mobile: "", token: "", username: "", imageUrl: "", email: ""}},
     reducers: {
         initUser: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload;

@@ -1,6 +1,16 @@
-import {FC, ReactElement, useEffect} from "react"
+import {FC, Fragment, ReactElement, useEffect} from "react"
 import classStyle from "./MyInformation.module.less"
-import {Badge, ConfigProvider, Descriptions, DescriptionsProps, theme} from "antd";
+import {
+    Badge,
+    ConfigProvider,
+    DatePicker,
+    Descriptions,
+    DescriptionsProps,
+    FloatButton,
+    Form,
+    Popover,
+    theme
+} from "antd";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
@@ -8,6 +18,8 @@ import DashboardChart from "../../../echartsComponent/dashboard/DashboardChart.t
 import RadarChart from "../../../echartsComponent/RadarChart/RadarChart.tsx";
 import TodoList from "../../../component/todoList/TodoList.tsx";
 import Regex from "../../../util/Regex.ts";
+import UploadFile from "../../../component/uploadFile/UploadFile.tsx";
+import {HistoryOutlined} from "@ant-design/icons";
 
 const MyInformation: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
@@ -33,7 +45,7 @@ const MyInformation: FC = (): ReactElement => {
         {
             key: '4',
             label: t("e-mail"),
-            children: "zengxiangruiit@yeah.net",
+            children: user.user.email,
             span: 2
         },
         {
@@ -58,6 +70,26 @@ const MyInformation: FC = (): ReactElement => {
         <ConfigProvider theme={{
             algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm
         }}>
+            <Popover content={
+                <Fragment>
+                    <Form>
+                        <Form.Item
+                            label="DatePicker"
+                            name="DatePicker"
+                        >
+                            <DatePicker/>
+                        </Form.Item>
+                    </Form>
+                </Fragment>
+            } title={t("Choose a Start time")}>
+                <FloatButton
+                    tooltip={t("Click to select the start time")}
+                    shape="square"
+                    type="primary"
+                    style={{insetInlineEnd: 1100}}
+                    icon={<HistoryOutlined/>}
+                />
+            </Popover>
             <div className={classStyle.MyInformationBox}>
                 <div className={classStyle.MyInformation}>
                     <div className={classStyle.InformationBox}>
@@ -66,6 +98,7 @@ const MyInformation: FC = (): ReactElement => {
                                       column={2}/>
                     </div>
                     <div className={classStyle.uploadFile}>
+                        <UploadFile/>
                     </div>
                 </div>
                 <div className={classStyle.CurrentInformation}>

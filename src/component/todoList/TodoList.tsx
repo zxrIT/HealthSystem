@@ -8,7 +8,6 @@ import {TwitterOutlined} from '@ant-design/icons';
 import type {CollapseProps} from 'antd';
 import {Collapse} from 'antd';
 
-
 const text = `
   A dog is a type of domesticated animal.
   Known for its loyalty and faithfulness,
@@ -27,7 +26,6 @@ const TodoList: FC = (): ReactElement => {
         <Tooltip title={t("Email reminder")}>
             <TwitterOutlined
                 onClick={(event) => {
-                    // If you don't want click extra trigger collapse, you can prevent this:
                     event.stopPropagation();
                 }}
             />

@@ -1,7 +1,7 @@
 import {FC, ReactElement, useEffect, useState} from "react"
 import wechatLoginStyle from "./WeChatLogin.module.less"
 import {CheckCircleTwoTone} from "@ant-design/icons";
-import {message} from "antd";
+import {ConfigProvider, message, theme} from "antd";
 import {nanoid} from "@reduxjs/toolkit";
 import {IWechatLoginMessage} from "../../../typing/login/wechatLogin.ts";
 import {useDispatch, useSelector} from "react-redux";
@@ -49,7 +49,6 @@ const WeChatLogin: FC = (): ReactElement => {
             console.log("websocket open");
         }
         webSocket.onmessage = event => {
-            console.log(event.data);
             const messageData: IWechatLoginMessage = JSON.parse(event.data);
             if (messageData.wechatLoginUserResponse === undefined) {
                 if (messageData.loginId === loginId && messageData.scanStatus) {
@@ -81,26 +80,30 @@ const WeChatLogin: FC = (): ReactElement => {
         }
     }, [webSocketStatus]);
     return (
-        <div className={wechatLoginStyle.wechatLoginBox}>
-            <div className={wechatLoginStyle.wechatLoginImg}>
-                <img src={imageUrl} alt="微信登录二维码"/>
+        <ConfigProvider theme={{
+            algorithm: topicSlice.topic ? theme.defaultAlgorithm : theme.darkAlgorithm
+        }}>
+            <div className={wechatLoginStyle.wechatLoginBox}>
+                <div className={wechatLoginStyle.wechatLoginImg}>
+                    <img src={imageUrl} alt="微信登录二维码"/>
+                </div>
+                <div className={wechatLoginStyle.wechatLoginSuccess}>
+                    <CheckCircleTwoTone style={{display: !scanCodeStatus ? "none" : ""}} twoToneColor="#26C445"/>
+                    <text
+                        style={{
+                            color: "#26C445",
+                            marginLeft: 5,
+                            display: !scanCodeStatus ? "none" : "",
+                        }}>{t("Please confirm login on the mobile terminal if the code is scanned successfully")}
+                    </text>
+                    <text
+                        style={{
+                            color: "#636CFF", marginLeft: 5, display: scanCodeStatus ? "none" : ""
+                        }}>{t("Please scan the code on wechat to log in")}
+                    </text>
+                </div>
             </div>
-            <div className={wechatLoginStyle.wechatLoginSuccess}>
-                <CheckCircleTwoTone style={{display: !scanCodeStatus ? "none" : ""}} twoToneColor="#26C445"/>
-                <text
-                    style={{
-                        color: "#26C445",
-                        marginLeft: 5,
-                        display: !scanCodeStatus ? "none" : "",
-                    }}>{t("Please confirm login on the mobile terminal if the code is scanned successfully")}
-                </text>
-                <text
-                    style={{
-                        color: "#636CFF", marginLeft: 5, display: scanCodeStatus ? "none" : ""
-                    }}>{t("Please scan the code on wechat to log in")}
-                </text>
-            </div>
-        </div>
+        </ConfigProvider>
     )
 }
 

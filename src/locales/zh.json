@@ -114,6 +114,10 @@
     "Identification number": "身份证号",
     "e-mail": "邮箱",
     "Successful authentication": "认证成功",
-    "Not authenticated": "未认证"
+    "Not authenticated": "未认证",
+    "It is all, nothing more": "这就是全部，仅此而已",
+    "Download": "下载",
+    "Uploaded files": "上传过的文件",
+    "Are you sure you want to quit?": "确认要退出吗?"
   }
 }

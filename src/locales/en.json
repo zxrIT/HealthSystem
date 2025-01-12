@@ -114,6 +114,10 @@
     "Identification number": "Identification number",
     "e-mail": "e-mail",
     "Successful authentication": "Successful authentication",
-    "Not authenticated": "Not authenticated"
+    "Not authenticated": "Not authenticated",
+    "It is all, nothing more": "It is all, nothing more",
+    "Download": "Download",
+    "Uploaded files": "Uploaded files",
+    "Are you sure you want to quit?": "Are you sure you want to quit?"
   }
 }

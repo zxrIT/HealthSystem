@@ -23,8 +23,10 @@ import WeiboLogin from "./WeiboLogin/WeiboLogin.tsx";
 import MessageLogin from "./MessageLogin/MessageLogin.tsx";
 import UsernameLogin from "./UsernameLogin/UsernameLogin.tsx";
 import {useTranslation} from "react-i18next";
-import {IUser} from "../../typing/user/user.ts";
 import {useLocalStorage} from "../../hooks/useLocalStorage.ts";
+import {IUser} from "../../typing/user/user.ts";
+import {verificationTokenService} from "../../service/loginService";
+import {BaseResponse} from "../../typing/response/baseResponse.ts";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 
 
@@ -32,16 +34,22 @@ const Login: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
     const topicSlice = useSelector((state: RootState) => state.topic);
     const [loginWay, setLoginWay] = useState<LoginEnum>(LoginEnum.Password)
-    const navigateFunction: NavigateFunction = useNavigate();
     const dispatch = useDispatch();
+    const navigateFunction: NavigateFunction = useNavigate();
     const [loginStatus, setLoginStatus] = useState<boolean>(false);
-    const {getStorage, setStorage} = useLocalStorage()
-    const token: string = JSON.parse(getStorage("authentication"))
-    const user: IUser = JSON.parse(getStorage("user"))
+    const {setStorage, getStorage} = useLocalStorage()
+    const user: IUser = JSON.parse(getStorage("user"));
+    const authentication: string = JSON.parse(getStorage("authentication"));
     useEffect(() => {
-        if (token && user && token.length > 0 && Object.keys(user).length > 0) {
-            navigateFunction("/home")
+        if (user !== void 0 || authentication !== void 0) {
+            verificationTokenService<BaseResponse<boolean>, string>(user.id, authentication).then((response) => {
+                if (response.data) {
+                    navigateFunction("/home")
+                }
+            })
         }
+    }, []);
+    useEffect(() => {
         i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
     }, [topicSlice.internationalization])
 

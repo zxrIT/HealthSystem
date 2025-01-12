@@ -9,5 +9,6 @@ export interface LoginPasswordResponse {
     id: string
     mobile: string
     identityCard: string,
-    imageUrl: string
+    imageUrl: string,
+    email: string
 }
