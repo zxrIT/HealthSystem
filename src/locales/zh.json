@@ -118,6 +118,12 @@
     "It is all, nothing more": "这就是全部，仅此而已",
     "Download": "下载",
     "Uploaded files": "上传过的文件",
-    "Are you sure you want to quit?": "确认要退出吗?"
+    "Are you sure you want to quit?": "确认要退出吗?",
+    "The to-do items will be automatically deleted after 24:00 every day": "代办事项每日24时后自动删除",
+    "Please fill in the information before submitting": "请填写事项后再提交",
+    "Confirm sending agent reminder to": "确认发送代办提醒至",
+    "Failure to send": "发送失败",
+    "The items sent are": "发送的事项为",
+    "Please authenticate your real name before using it": "请先实名认证后再进行使用"
   }
 }

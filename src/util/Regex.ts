@@ -4,4 +4,7 @@ export default class Regex {
 
     static readonly regexMobile: RegExp =
         /^1\d{10}$/
+
+    static readonly regexEmail: RegExp =
+        /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/
 }

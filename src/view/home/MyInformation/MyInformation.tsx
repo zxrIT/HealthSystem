@@ -25,6 +25,7 @@ const MyInformation: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
     const topicSlice = useSelector((state: RootState) => state.topic)
     const user = useSelector((state: RootState) => state.user)
+
     const items: DescriptionsProps['items'] = [
         {
             key: '1',
@@ -53,10 +54,10 @@ const MyInformation: FC = (): ReactElement => {
             label: t("Authentication status"),
             children: <Badge status={
                 (Regex.regexIdentityCard.test(user.user.identityCard) &&
-                    Regex.regexMobile.test(user.user.mobile)) ? "success" : "default"
+                    Regex.regexMobile.test(user.user.mobile) && Regex.regexEmail.test(user.user.email)) ? "success" : "default"
             } text={
                 (Regex.regexIdentityCard.test(user.user.identityCard) &&
-                    Regex.regexMobile.test(user.user.mobile)) ? t("Successful authentication")
+                    Regex.regexMobile.test(user.user.mobile) && Regex.regexEmail.test(user.user.email)) ? t("Successful authentication")
                     : t("Not authenticated")
             }/>,
             span: 2,

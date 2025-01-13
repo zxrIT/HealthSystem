@@ -18,8 +18,8 @@ function App() {
     return (
         <Fragment>
             <BrowserRouter>
-                <WithAuthenticationHocComponent>
-                    <React.Suspense fallback={<Loading/>}>
+                <React.Suspense fallback={<Loading/>}>
+                    <WithAuthenticationHocComponent>
                         <Routes>
                             <Route path="/home" element={<HealthIndex/>}>
                                 <Route path="/home/" element={<ContentChargeUp/>}/>
@@ -33,8 +33,8 @@ function App() {
                             <Route path="/" element={<Login/>}/>
                             <Route path="*" element={<Navigate to="/login"/>}/>
                         </Routes>
-                    </React.Suspense>
-                </WithAuthenticationHocComponent>
+                    </WithAuthenticationHocComponent>
+                </React.Suspense>
             </BrowserRouter>
         </Fragment>
     )

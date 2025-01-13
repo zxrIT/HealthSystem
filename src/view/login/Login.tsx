@@ -41,7 +41,7 @@ const Login: FC = (): ReactElement => {
     const user: IUser = JSON.parse(getStorage("user"));
     const authentication: string = JSON.parse(getStorage("authentication"));
     useEffect(() => {
-        if (user !== void 0 || authentication !== void 0) {
+        if (user !== void 0 && authentication !== void 0 && user !== null && authentication !== null) {
             verificationTokenService<BaseResponse<boolean>, string>(user.id, authentication).then((response) => {
                 if (response.data) {
                     navigateFunction("/home")

@@ -118,6 +118,12 @@
     "It is all, nothing more": "It is all, nothing more",
     "Download": "Download",
     "Uploaded files": "Uploaded files",
-    "Are you sure you want to quit?": "Are you sure you want to quit?"
+    "Are you sure you want to quit?": "Are you sure you want to quit?",
+    "The to-do items will be automatically deleted after 24:00 every day": "The to-do items will be automatically deleted after 24:00 every day",
+    "Please fill in the information before submitting": "Please fill in the information before submitting",
+    "Confirm sending agent reminder to": "Confirm sending agent reminder to",
+    "Failure to send": "Failure to send",
+    "The items sent are": "The items sent are",
+    "Please authenticate your real name before using it": "Please authenticate your real name before using it"
   }
 }

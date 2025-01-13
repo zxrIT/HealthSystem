@@ -33,7 +33,7 @@ const Config: FC = (): ReactElement => {
     }, [topicSlice.internationalization])
 
     useEffect(() => {
-        if (Regex.regexIdentityCard.test(user.user.identityCard) && Regex.regexMobile.test(user.user.mobile)) {
+        if (Regex.regexIdentityCard.test(user.user.identityCard) && Regex.regexMobile.test(user.user.mobile) && Regex.regexEmail.test(user.user.email)) {
             setRealNameAuthenticationPngStatus(true);
         }
     }, [user.user.identityCard, user.user.mobile]);
