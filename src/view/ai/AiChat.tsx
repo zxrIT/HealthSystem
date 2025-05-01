@@ -1,4 +1,4 @@
-import {FC, ReactElement, useState, useEffect, useCallback, useRef} from "react"
+import {FC, ReactElement, useState, useEffect, useCallback} from "react"
 import {Button, Input, ConfigProvider} from "antd"
 import {SendOutlined, PaperClipOutlined, MessageOutlined} from "@ant-design/icons"
 import classStyle from "./AiChat.module.less"

@@ -23,6 +23,35 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
     const lastMessageRef = useRef<string | undefined>(undefined);
     const typingMessageIndexRef = useRef<number>(-1);
 
+    // 打字机效果
+    const typeWriter = (text: string) => {
+        setIsTyping(true);
+        let index = 0;
+        setDisplayText('');
+
+        const timer = setInterval(() => {
+            if (index < text.length) {
+                setDisplayText((prev) => prev + text.charAt(index));
+                index++;
+            } else {
+                clearInterval(timer);
+                setIsTyping(false);
+            }
+        }, 30);
+        return () => clearInterval(timer);
+    };
+
+    const scrollToBottom = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
+
+    // 监听消息变化，自动滚动到底部
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, displayText]);
+
     useEffect(() => {
         if (message !== undefined && message !== lastMessageRef.current) {
             lastMessageRef.current = message;
@@ -56,32 +85,8 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
         }
     }, [message, chatId]);
 
-    // 打字机效果
-    const typeWriter = (text: string) => {
-        setIsTyping(true);
-        let index = 0;
-        setDisplayText('');
-
-        const timer = setInterval(() => {
-            if (index < text.length) {
-                setDisplayText((prev) => prev + text.charAt(index));
-                index++;
-            } else {
-                clearInterval(timer);
-                setIsTyping(false);
-            }
-        }, 30);
-        return () => clearInterval(timer);
-    };
-
-    const scrollToBottom = () => {
-        if (contentRef.current) {
-            contentRef.current.scrollTop = contentRef.current.scrollHeight;
-        }
-    };
-
     useEffect(() => {
-        setMessages([])
+        setMessages([]);
         setIsLoading(true);
         getChatMessagesService<BaseResponse<string>>(chatId, "你好,我是" + user.user.username).then((response) => {
             if (response.code === 200) {
@@ -91,15 +96,15 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
                     content: response.data,
                     timestamp: new Date().toLocaleString()
                 };
-                setMessages(prev => [...prev, newMessage]);
+                setMessages(prev => {
+                    const newMessages = [...prev, newMessage];
+                    typingMessageIndexRef.current = newMessages.length - 1;
+                    return newMessages;
+                });
                 typeWriter(response.data);
             }
         });
     }, [chatId]);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [displayText]);
 
     return (
         <div className={classStyle.chatContentBox} ref={contentRef}>
