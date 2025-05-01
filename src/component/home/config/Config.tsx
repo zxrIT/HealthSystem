@@ -13,17 +13,21 @@ import GithubDarkPng from "../../../assets/static/system/icon/github-dark.png"
 import englishPng from "../../../assets/static/system/icon/english.png";
 import GithubPng from "../../../assets/static/system/icon/github.png";
 import chineseDarkpng from "../../../assets/static/system/icon/chinese-dark.png";
+import aiPng from "../../../assets/static/system/icon/ai.png"
 import englishDarkPng from "../../../assets/static/system/icon/english-dark.png";
 import {changeInternationalization, changeTopic} from "../../../store/slice/topicSlice.ts";
 import mapImg from "../../../assets/static/system/icon/user.jpg";
 import Regex from "../../../util/Regex.ts";
 import {Tooltip} from "antd";
 import {useLocalStorage} from "../../../hooks/useLocalStorage.ts";
+import {type NavigateFunction, useNavigate} from "react-router-dom";
+import {NavigateUrl} from "../../../typing/enum";
 
 const Config: FC = (): ReactElement => {
     const [t, i18n] = useTranslation();
     const {setStorage} = useLocalStorage()
     const dispatch = useDispatch()
+    const navigate: NavigateFunction = useNavigate()
     const topicSlice = useSelector((state: RootState) => state.topic);
     const user = useSelector((state: RootState) => state.user);
     const [realNameAuthenticationPngStatus, setRealNameAuthenticationPngStatus] = useState<boolean>(false);
@@ -44,9 +48,15 @@ const Config: FC = (): ReactElement => {
 
     return (
         <div className={topicSlice.topic ? classStyle.configBox : classStyle.configBoxDark}>
+            <div className={classStyle.icon} style={{borderRadius: "50%"}} onClick={() => {
+                navigate(NavigateUrl.ai)
+            }}>
+                <img style={{borderRadius: "50%"}}
+                     src={aiPng} alt="ai"/>
+            </div>
             <div className={classStyle.icon} onClick={() => {
                 dispatch(changeTopic(!topicSlice.topic))
-                setStorage("topic",JSON.stringify(!topicSlice.topic))
+                setStorage("topic", JSON.stringify(!topicSlice.topic))
             }}>
                 <img src={topicSlice.topic ? sunPng : darkPng} alt="Logo"/>
             </div>

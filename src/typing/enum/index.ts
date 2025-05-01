@@ -30,4 +30,5 @@ export enum NavigateUrl {
     myInformation = "/home/myInformation",
     annualAccountAnalysis = "/home/AnnualAccountAnalysis",
     calendarAnalysis = "/home/CalendarAnalysis",
+    ai="/home/ai",
 }

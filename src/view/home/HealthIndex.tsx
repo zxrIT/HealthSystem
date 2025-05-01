@@ -19,6 +19,7 @@ const HealthIndex: FC = (): ReactElement => {
     const location: Location = useLocation();
     const dispatch = useDispatch();
     const topicSlice = useSelector((state: RootState) => state.topic);
+
     useEffect(() => {
         setTransitionStatus(!transitionStatus);
     }, [topicSlice.internationalization, topicSlice.topic]);

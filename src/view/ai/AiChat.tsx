@@ -49,7 +49,7 @@ const AiChat: FC = (): ReactElement => {
     const handleSendMessage = useCallback((value: string) => {
         if (value.trim()) {
             setPrompt(value);
-            setInputValue(''); // 清空输入框
+            setInputValue('');
         }
     }, []);
 
