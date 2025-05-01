@@ -3,7 +3,7 @@ import {useLocalStorage} from "../hooks/useLocalStorage.ts";
 
 const httpAxios: AxiosInstance = axios.create({
     baseURL: "http://localhost:10000",
-    timeout: 5000
+    timeout: 500000
 } as CreateAxiosDefaults)
 
 httpAxios.interceptors.request.use((config: InternalAxiosRequestConfig) => {

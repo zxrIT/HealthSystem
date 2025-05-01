@@ -1,0 +1,159 @@
+import React, {FC, ReactElement, useEffect, useState, useRef} from "react"
+import {Avatar} from "antd"
+import classStyle from "./AiChatContent.module.less"
+import {UserOutlined, RobotOutlined} from "@ant-design/icons"
+import {useSelector} from "react-redux";
+import {RootState} from "../../store";
+import {Message} from "../../typing/ai/ai.ts";
+import {getChatMessagesService} from "../../service/aiService";
+import {BaseResponse} from "../../typing/response/baseResponse.ts";
+
+interface IProps {
+    chatId: string,
+    message?: string
+}
+
+const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement => {
+    const user = useSelector((state: RootState) => state.user);
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [displayText, setDisplayText] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const lastMessageRef = useRef<string | undefined>(undefined);
+    const typingMessageIndexRef = useRef<number>(-1);
+
+    useEffect(() => {
+        if (message !== undefined && message !== lastMessageRef.current) {
+            lastMessageRef.current = message;
+            
+            // 添加用户消息
+            const userMessage: Message = {
+                type: "user",
+                content: message,
+                timestamp: new Date().toLocaleString()
+            };
+            setMessages(prev => [...prev, userMessage]);
+            
+            // 发送请求获取AI响应
+            setIsLoading(true);
+            getChatMessagesService<BaseResponse<string>>(chatId, message).then((response) => {
+                if (response.code === 200) {
+                    setIsLoading(false);
+                    const newMessage: Message = {
+                        type: "ai",
+                        content: response.data,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    setMessages(prev => {
+                        const newMessages = [...prev, newMessage];
+                        typingMessageIndexRef.current = newMessages.length - 1;
+                        return newMessages;
+                    });
+                    typeWriter(response.data);
+                }
+            });
+        }
+    }, [message, chatId]);
+
+    // 打字机效果
+    const typeWriter = (text: string) => {
+        setIsTyping(true);
+        let index = 0;
+        setDisplayText('');
+
+        const timer = setInterval(() => {
+            if (index < text.length) {
+                setDisplayText((prev) => prev + text.charAt(index));
+                index++;
+            } else {
+                clearInterval(timer);
+                setIsTyping(false);
+            }
+        }, 30);
+        return () => clearInterval(timer);
+    };
+
+    const scrollToBottom = () => {
+        if (contentRef.current) {
+            contentRef.current.scrollTop = contentRef.current.scrollHeight;
+        }
+    };
+
+    useEffect(() => {
+        setMessages([])
+        setIsLoading(true);
+        getChatMessagesService<BaseResponse<string>>(chatId, "你好,我是" + user.user.username).then((response) => {
+            if (response.code === 200) {
+                setIsLoading(false);
+                const newMessage: Message = {
+                    type: "ai",
+                    content: response.data,
+                    timestamp: new Date().toLocaleString()
+                };
+                setMessages(prev => [...prev, newMessage]);
+                typeWriter(response.data);
+            }
+        });
+    }, [chatId]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [displayText]);
+
+    return (
+        <div className={classStyle.chatContentBox} ref={contentRef}>
+            {messages.map((message, index) => (
+                <div
+                    key={index}
+                    className={`${classStyle.messageItem} ${
+                        message.type === 'user' ? classStyle.userMessage : classStyle.aiMessage
+                    }`}
+                >
+                    <div className={classStyle.messageHeader}>
+                        <Avatar
+                            icon={message.type === 'user' ? <UserOutlined/> : <RobotOutlined/>}
+                            className={message.type === 'user' ? classStyle.userAvatar : classStyle.aiAvatar}
+                        />
+                        <span className={classStyle.timestamp}>
+                            {message.timestamp} {message.type === 'user' ? user.user.username : 'deepseekR1深度思考'}
+                        </span>
+                    </div>
+                    <div className={classStyle.messageContent}>
+                        {message.type === 'ai' && isTyping && index === typingMessageIndexRef.current ? (
+                            displayText.split('\n').map((line, i) => (
+                                <p key={i}>{line}</p>
+                            ))
+                        ) : (
+                            message.content.split('\n').map((line, i) => (
+                                <p key={i}>{line}</p>
+                            ))
+                        )}
+                    </div>
+                </div>
+            ))}
+            {isLoading && (
+                <div className={`${classStyle.messageItem} ${classStyle.aiMessage}`}>
+                    <div className={classStyle.messageHeader}>
+                        <Avatar
+                            icon={<RobotOutlined/>}
+                            className={classStyle.aiAvatar}
+                        />
+                        <span className={classStyle.timestamp}>
+                            {new Date().toLocaleString()} deepseekR1深度思考
+                        </span>
+                    </div>
+                    <div className={`${classStyle.messageContent} ${classStyle.loadingContent}`}>
+                        <div className={classStyle.loadingDots}>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+});
+
+export default AiChatContent; 

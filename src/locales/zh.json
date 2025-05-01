@@ -124,6 +124,10 @@
     "Confirm sending agent reminder to": "确认发送代办提醒至",
     "Failure to send": "发送失败",
     "The items sent are": "发送的事项为",
-    "Please authenticate your real name before using it": "请先实名认证后再进行使用"
+    "Please authenticate your real name before using it": "请先实名认证后再进行使用",
+    "Chat history": "聊天记录",
+    "New dialogue": "新对话",
+    "dialogue": "对话",
+    "Input messages, upload pictures, videos...": "输入消息，可上传图片、视频..."
   }
 }

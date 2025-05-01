@@ -124,6 +124,10 @@
     "Confirm sending agent reminder to": "Confirm sending agent reminder to",
     "Failure to send": "Failure to send",
     "The items sent are": "The items sent are",
-    "Please authenticate your real name before using it": "Please authenticate your real name before using it"
+    "Please authenticate your real name before using it": "Please authenticate your real name before using it",
+    "Chat history": "Chat history",
+    "New dialogue": "New dialogue",
+    "dialogue": "dialogue",
+    "Input messages, upload pictures, videos...": "Input messages, upload pictures, videos..."
   }
 }
