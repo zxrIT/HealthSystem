@@ -1,12 +1,12 @@
 import {FC, ReactElement, useState, useEffect, useCallback} from "react"
-import {Button, Input, ConfigProvider} from "antd"
+import {Button, Input, ConfigProvider, message} from "antd"
 import {SendOutlined, PaperClipOutlined, MessageOutlined} from "@ant-design/icons"
 import classStyle from "./AiChat.module.less"
 import {useTranslation} from "react-i18next"
 import {useSelector} from "react-redux"
 import {RootState} from "../../store"
 import {theme} from "antd"
-import {getChatIdsService} from "../../service/aiService";
+import {getChatIdsService, createChatIdService} from "../../service/aiService";
 import {BaseResponse} from "../../typing/response/baseResponse.ts";
 import {chatHistory} from "../../typing/ai/ai.ts";
 import AiChatContent from "../../component/ai/AiChatContent.tsx";
@@ -14,16 +14,42 @@ import AiChatContent from "../../component/ai/AiChatContent.tsx";
 const AiChat: FC = (): ReactElement => {
     const {t} = useTranslation();
     const [prompt, setPrompt] = useState<string>();
-    const [inputValue, setInputValue] = useState<string>('');
     const [choiceChatId, setChoiceChatId] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(true);
     const [chatHistory, setChatHistory] = useState<chatHistory[]>([])
     const topicSlice = useSelector((state: RootState) => state.topic);
+    const [inputValue, setInputValue] = useState<string>('');
+
+    // 生成10位随机数
+    const generateChatId = useCallback(() => {
+        const min = 1000000000; // 10位数的最小值
+        const max = 9999999999; // 10位数的最大值
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }, []);
+
+    // 创建新对话
+    const handleCreateNewChat = useCallback(() => {
+        const newChatId = generateChatId().toString();
+        createChatIdService<BaseResponse<string>>(newChatId).then((response) => {
+            if (response.code === 200) {
+                const newChat: chatHistory = {
+                    id: newChatId,
+                    title: "会话 " + newChatId
+                };
+                setChatHistory(prev => [...prev, newChat]);
+                setChoiceChatId(newChatId);
+            } else {
+                message.error(t("Failed to create new chat"));
+            }
+        }).catch(() => {
+            message.error(t("Failed to create new chat"));
+        });
+    }, [generateChatId, t]);
 
     const handleSendMessage = useCallback((value: string) => {
         if (value.trim()) {
             setPrompt(value);
-            setInputValue('');
+            setInputValue(''); // 清空输入框
         }
     }, []);
 
@@ -52,6 +78,7 @@ const AiChat: FC = (): ReactElement => {
                         <Button
                             type="primary"
                             icon={<span>+</span>}
+                            onClick={handleCreateNewChat}
                         >
                             {t("New dialogue")}
                         </Button>

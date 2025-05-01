@@ -128,6 +128,7 @@
     "Chat history": "Chat history",
     "New dialogue": "New dialogue",
     "dialogue": "dialogue",
-    "Input messages, upload pictures, videos...": "Input messages, upload pictures, videos..."
+    "Input messages, upload pictures, videos...": "Input messages, upload pictures, videos...",
+    "Failed to create new chat": "Failed to create new chat"
   }
 }

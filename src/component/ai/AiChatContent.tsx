@@ -1,11 +1,11 @@
 import React, {FC, ReactElement, useEffect, useState, useRef} from "react"
 import {Avatar} from "antd"
 import classStyle from "./AiChatContent.module.less"
-import {UserOutlined, RobotOutlined} from "@ant-design/icons"
+import {RobotOutlined} from "@ant-design/icons"
 import {useSelector} from "react-redux";
 import {RootState} from "../../store";
 import {Message} from "../../typing/ai/ai.ts";
-import {getChatMessagesService} from "../../service/aiService";
+import {getChatMessagesService, getChatHistoryService} from "../../service/aiService";
 import {BaseResponse} from "../../typing/response/baseResponse.ts";
 
 interface IProps {
@@ -22,6 +22,7 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
     const contentRef = useRef<HTMLDivElement>(null);
     const lastMessageRef = useRef<string | undefined>(undefined);
     const typingMessageIndexRef = useRef<number>(-1);
+    const isFirstLoadRef = useRef<boolean>(true);
 
     // 打字机效果
     const typeWriter = (text: string) => {
@@ -88,21 +89,50 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
     useEffect(() => {
         setMessages([]);
         setIsLoading(true);
-        getChatMessagesService<BaseResponse<string>>(chatId, "你好,我是" + user.user.username).then((response) => {
-            if (response.code === 200) {
+        
+        // 首先尝试获取历史记录
+        getChatHistoryService<BaseResponse<Message[]>>(chatId).then((response) => {
+            if (response.code === 200 && response.data.length > 0) {
+                // 如果有历史记录，直接显示
+                setMessages(response.data);
                 setIsLoading(false);
-                const newMessage: Message = {
-                    type: "ai",
-                    content: response.data,
-                    timestamp: new Date().toLocaleString()
-                };
-                setMessages(prev => {
-                    const newMessages = [...prev, newMessage];
-                    typingMessageIndexRef.current = newMessages.length - 1;
-                    return newMessages;
+            } else {
+                // 如果没有历史记录，发送欢迎消息
+                getChatMessagesService<BaseResponse<string>>(chatId, "你好,我是" + user.user.username).then((response) => {
+                    if (response.code === 200) {
+                        setIsLoading(false);
+                        const newMessage: Message = {
+                            type: "ai",
+                            content: response.data,
+                            timestamp: new Date().toLocaleString()
+                        };
+                        setMessages(prev => {
+                            const newMessages = [...prev, newMessage];
+                            typingMessageIndexRef.current = newMessages.length - 1;
+                            return newMessages;
+                        });
+                        typeWriter(response.data);
+                    }
                 });
-                typeWriter(response.data);
             }
+        }).catch(() => {
+            // 如果获取历史记录失败，也发送欢迎消息
+            getChatMessagesService<BaseResponse<string>>(chatId, "你好,我是" + user.user.username).then((response) => {
+                if (response.code === 200) {
+                    setIsLoading(false);
+                    const newMessage: Message = {
+                        type: "ai",
+                        content: response.data,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    setMessages(prev => {
+                        const newMessages = [...prev, newMessage];
+                        typingMessageIndexRef.current = newMessages.length - 1;
+                        return newMessages;
+                    });
+                    typeWriter(response.data);
+                }
+            });
         });
     }, [chatId]);
 
@@ -117,7 +147,8 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
                 >
                     <div className={classStyle.messageHeader}>
                         <Avatar
-                            icon={message.type === 'user' ? <UserOutlined/> : <RobotOutlined/>}
+                            src={message.type === 'user' ? user.user.imageUrl : undefined}
+                            icon={message.type === 'user' ? undefined : <RobotOutlined/>}
                             className={message.type === 'user' ? classStyle.userAvatar : classStyle.aiAvatar}
                         />
                         <span className={classStyle.timestamp}>

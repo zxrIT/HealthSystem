@@ -128,6 +128,7 @@
     "Chat history": "聊天记录",
     "New dialogue": "新对话",
     "dialogue": "对话",
-    "Input messages, upload pictures, videos...": "输入消息，可上传图片、视频..."
+    "Input messages, upload pictures, videos...": "输入消息，可上传图片、视频...",
+    "Failed to create new chat": "新建对话失败"
   }
 }
