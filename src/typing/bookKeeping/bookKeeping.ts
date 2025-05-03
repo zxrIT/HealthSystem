@@ -20,3 +20,16 @@ export interface IBookingBookKeepingDisplay {
     amountOfTransaction: number
     modeOfTransaction: string
 }
+
+export interface ISurplus {
+    userId: string
+    income: number
+    disburse: number
+    surplus: number
+}
+
+export interface IUploadTime {
+    userId: string
+    alipay: string,
+    wechat: string
+}

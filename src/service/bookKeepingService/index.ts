@@ -8,6 +8,22 @@ export function getBookKeepingService<T>(page: number, quantity: number): Promis
     })
 }
 
+export function getSurplusService<T>(): Promise<T> {
+    return httpAxios.get<T, T>("/computed/getSurplus").then((response: T) => {
+        return response;
+    }, (error) => {
+        return Promise.reject(error);
+    })
+}
+
+export function getTimeService<T>(): Promise<T> {
+    return httpAxios.get<T, T>("/computed/getUploadTime").then((response: T) => {
+        return response;
+    }, (error) => {
+        return Promise.reject(error);
+    })
+}
+
 export function createBookKeepingService<T, R>(bookKeeping: R): Promise<T> {
     return httpAxios.post<T, T, R>("/book/keeping/createBookKeeping/", bookKeeping).then((response: T) => {
         return response;

@@ -8,19 +8,50 @@ import UploadCheck from "../../../view/upload/UploadCheck.tsx";
 import {useTranslation} from "react-i18next";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../store";
+import {getSurplusService, getTimeService} from "../../../service/bookKeepingService";
+import {ISurplus, IUploadTime} from "../../../typing/bookKeeping/bookKeeping.ts";
+import {BaseResponse} from "../../../typing/response/baseResponse.ts";
+import {format, parse} from 'date-fns';
 
 const Header: FC = (): ReactElement => {
-    const [income, setIncome] = useState<number>(111111.03)
-    const [disburse, setDisburse] = useState<number>(11111.01)
+    const [aliUploadTime, setAliUploadTime] = useState<String>("2025-03-01");
+    const [wechatUploadTime, setWechatUploadTime] = useState<String>("2025-03-01");
+    const [income, setIncome] = useState<number>(21316.03)
+    const [disburse, setDisburse] = useState<number>(19128.61)
     const [open, setOpen] = useState<boolean>(false);
     const [uploadTitle, setUploadTitle] = useState<string>("")
     const [uploadComponent, setUploadComponent] = useState<Upload>()
     const [t, i18n] = useTranslation();
     const topicSlice = useSelector((state: RootState) => state.topic);
 
+
     useEffect(() => {
         i18n.changeLanguage(topicSlice.internationalization ? "en" : "zh")
     }, [topicSlice.internationalization])
+
+    useEffect(() => {
+        getSurplusService<BaseResponse<ISurplus>>().then((response) => {
+            if (response.code === 200) {
+                setIncome(response.data.income)
+                setDisburse(response.data.disburse)
+            }
+        })
+    }, []);
+
+    useEffect(() => {
+        getTimeService<BaseResponse<IUploadTime>>().then((response) => {
+            if (response.code === 200) {
+                if (response.data.alipay !== null && response.data.alipay !== undefined) {
+                    const date = parse(response.data.alipay, "MMM d, yyyy, hh:mm:ss aa", new Date());
+                    setAliUploadTime(format(date, "yyyy-MM-dd"));
+                }
+                if (response.data.wechat !== null && response.data.wechat !== undefined) {
+                    const date = parse(response.data.wechat, "MMM d, yyyy, hh:mm:ss aa", new Date());
+                    setWechatUploadTime(format(date, "yyyy-MM-dd"));
+                }
+            }
+        })
+    }, []);
 
 
     useEffect(() => {
@@ -64,7 +95,7 @@ const Header: FC = (): ReactElement => {
                     </div>
                     <div className={header.echartsBox}>
                         <div className={header.echartsMoney}>
-                            <div className={header.echartsLeftTop}>¥&nbsp;{income - disburse}</div>
+                            <div className={header.echartsLeftTop}>¥&nbsp;{(income - disburse).toFixed(2)}</div>
                             <div className={header.echartsLeftBottom}>{t("surplus")}</div>
                         </div>
                         <div className={header.echartsRender}>
@@ -72,7 +103,7 @@ const Header: FC = (): ReactElement => {
                                 <Tooltip title={!topicSlice.internationalization ? "" : t("Last commit time")}>
                                     <div>
                                         <div style={{marginBottom: 5}}>{t("Last start time")}</div>
-                                        2024-1-3
+                                        {aliUploadTime}
                                     </div>
                                 </Tooltip>
                                 <Button icon={<AlipayCircleOutlined/>}
@@ -88,7 +119,7 @@ const Header: FC = (): ReactElement => {
                                 <Tooltip title={!topicSlice.internationalization ? "" : t("Last commit time")}>
                                     <div>
                                         <div style={{marginBottom: 5}}>{t("Last start time")}</div>
-                                        2024-1-3
+                                        {wechatUploadTime}
                                     </div>
                                 </Tooltip>
                                 <Button icon={<WechatOutlined/>} type="primary"
