@@ -5,5 +5,7 @@ export interface IUser {
     mobile: string
     identityCard: string
     imageUrl: string,
-    email: string
+    email: string,
+    salary: number,
+    threshold: number
 }

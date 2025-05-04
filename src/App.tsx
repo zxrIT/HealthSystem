@@ -11,6 +11,7 @@ const ContentChargeUp = React.lazy(() => import("./view/home/contentChargeUp/Con
 const MyInformation = React.lazy(() => import("./view/home/MyInformation/MyInformation"));
 const AnnualAccountAnalysis = React.lazy(() => import("./view/home/AnnualAccountAnalysis/AnnualAccountAnalysis"));
 const CalendarAnalysis = React.lazy(() => import("./view/home/CalendarAnalysis/CalendarAnalysis"));
+const EarlyWarning = React.lazy(() => import("./view/EarlyWarning/EarlyWarning.tsx"))
 const AiChat = React.lazy(() => import("./view/ai/AiChat.tsx"))
 const Forbidden = React.lazy(() => import("./error/403"));
 const ServerError = React.lazy(() => import("./error/500"));
@@ -29,6 +30,7 @@ function App() {
                                 <Route path="/home/AnnualAccountAnalysis" element={<AnnualAccountAnalysis/>}/>
                                 <Route path="/home/CalendarAnalysis" element={<CalendarAnalysis/>}/>
                                 <Route path="/home/ai" element={<AiChat/>}/>
+                                <Route path="/home/warning" element={<EarlyWarning/>}/>
                             </Route>
                             <Route path="/403" element={<Forbidden/>}/>
                             <Route path="/500" element={<ServerError/>}/>

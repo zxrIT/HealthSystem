@@ -47,11 +47,19 @@ const AiChat: FC = (): ReactElement => {
     }, [generateChatId, t]);
 
     const handleSendMessage = useCallback((value: string) => {
-        if (value.trim()) {
-            setPrompt(value);
-            setInputValue('');
+        if (!value.trim()) {
+            return;
         }
-    }, []);
+        
+        if (!choiceChatId) {
+            message.error(t("请先选择或创建一个对话"));
+            return;
+        }
+        
+        console.log("发送消息:", value, "到对话:", choiceChatId);
+        setPrompt(value);
+        setInputValue('');
+    }, [choiceChatId, t]);
 
     useEffect(() => {
         getChatIdsService<BaseResponse<String[]>>().then((response) => {

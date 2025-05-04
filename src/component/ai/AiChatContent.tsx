@@ -93,6 +93,7 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
     useEffect(() => {
         if (message !== undefined && message !== lastMessageRef.current) {
             lastMessageRef.current = message;
+            console.log("添加用户消息:", message);
             
             // 添加用户消息
             const userMessage: Message = {
@@ -100,9 +101,17 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
                 content: message,
                 timestamp: new Date().toLocaleString()
             };
-            setMessages(prev => [...prev, userMessage]);
             
-            sendMessage(chatId, message);
+            setMessages(prev => {
+                const newMessages = [...prev, userMessage];
+                console.log("更新后的消息列表:", newMessages);
+                return newMessages;
+            });
+            
+            // 延迟发送AI回复，确保用户消息先显示
+            setTimeout(() => {
+                sendMessage(chatId, message);
+            }, 100);
         }
     }, [message, chatId]);
 
@@ -154,7 +163,7 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
 
     return (
         <div className={classStyle.chatContentBox} ref={contentRef}>
-            {messages.map((message, index) => (
+            {messages.length > 0 ? messages.map((message, index) => (
                 <div
                     key={index}
                     className={`${classStyle.messageItem} ${
@@ -168,22 +177,24 @@ const AiChatContent: FC<IProps> = React.memo(({chatId, message}): ReactElement =
                             className={message.type === 'user' ? classStyle.userAvatar : classStyle.aiAvatar}
                         />
                         <span className={classStyle.timestamp}>
-                            {message.timestamp} {message.type === 'user' ? user.user.username : 'deepseekR1深度思考'}
+                            {message.timestamp} {message.type === 'user' ? user.user.username || '我' : 'deepseekR1深度思考'}
                         </span>
                     </div>
-                    <div className={classStyle.messageContent}>
+                    <div className={classStyle.messageContent} style={{color: message.type === 'user' ? 'white' : 'inherit'}}>
                         {message.type === 'ai' && isTyping && index === typingMessageIndexRef.current ? (
                             displayText.split('\n').map((line, i) => (
-                                <p key={i}>{line}</p>
+                                <p key={i}>{line || ' '}</p>
                             ))
                         ) : (
                             message.content.split('\n').map((line, i) => (
-                                <p key={i}>{line}</p>
+                                <p key={i}>{line || ' '}</p>
                             ))
                         )}
                     </div>
                 </div>
-            ))}
+            )) : (
+                <div className={classStyle.noMessages}>开始新的对话</div>
+            )}
             {isLoading && (
                 <div className={`${classStyle.messageItem} ${classStyle.aiMessage}`}>
                     <div className={classStyle.messageHeader}>

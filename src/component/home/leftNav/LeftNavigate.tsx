@@ -115,7 +115,9 @@ const LeftNavigate: FC = (): ReactElement => {
                 <div
                     className={!topicSlice.internationalization ? leftNavigate.leftMessage : leftNavigate.leftMessageEn}>
                     <Tooltip title={!topicSlice.internationalization ? "" : t("forewarning")} color="gold">
-                        <div><WarningOutlined/>&nbsp;
+                        <div onClick={()=>{
+                            changeLoadingStatus(LeftNavigateEnum.MySelf, NavigateUrl.warning)
+                        }}><WarningOutlined/>&nbsp;
                             <text
                                 style={{display: !topicSlice.internationalization ? "" : "none"}}>{t("forewarning")}</text>
                         </div>

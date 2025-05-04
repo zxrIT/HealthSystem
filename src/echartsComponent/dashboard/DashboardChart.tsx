@@ -23,7 +23,7 @@ const DashboardChart: FC = (): ReactElement => {
                 },
                 data: [
                     {
-                        value: 50,
+                        value: 84,
                         name: t("Proportion")
                     }
                 ]

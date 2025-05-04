@@ -86,11 +86,11 @@ const Header: FC = (): ReactElement => {
                 </Drawer>
                 <div className={topicSlice.topic ? header.headerBox : header.headerBoxDark}>
                     <div className={header.moneyBox}>
-                        <div className={header.money} style={{marginRight: 20}}>¥&nbsp;{income}</div>
+                        <div className={header.money} style={{marginRight: 20}}>¥&nbsp;{income.toFixed(2)}</div>
                         <div className={header.title}>{t("income")}</div>
                     </div>
                     <div className={header.moneyBox}>
-                        <div className={header.money}>¥&nbsp;{disburse}</div>
+                        <div className={header.money}>¥&nbsp;{disburse.toFixed(2)}</div>
                         <div className={header.title}>{t("disburse")}</div>
                     </div>
                     <div className={header.echartsBox}>

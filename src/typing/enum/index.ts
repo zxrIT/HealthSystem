@@ -3,7 +3,8 @@ export enum LeftNavigateEnum {
     DayBook = 1,
     Calendar = 2,
     AnnaAccount = 3,
-    MySelf = 4
+    MySelf = 4,
+    Waring=5
 }
 
 export enum LoginEnum {
@@ -31,4 +32,5 @@ export enum NavigateUrl {
     annualAccountAnalysis = "/home/AnnualAccountAnalysis",
     calendarAnalysis = "/home/CalendarAnalysis",
     ai="/home/ai",
+    warning="/home/warning",
 }
